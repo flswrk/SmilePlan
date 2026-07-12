@@ -55,7 +55,7 @@
   body{
     margin:0;
     font-family: var(--font-body);
-    background: #FFFFFF;
+    background: #EFF4F3;
     color: var(--ink);
     -webkit-font-smoothing: antialiased;
     text-rendering: optimizeLegibility;
@@ -1120,7 +1120,7 @@ display: inline-block; margin-left: 4px; font-style: italic; font-weight: inheri
         icon: ICON.crown
       },
       {
-        id: 'white-tray', name: 'Custom Whitening Trays<br>◾', descriptor: 'Long-Term Whitening', price: 3000, strikePrice: 3500, tier: 'better',
+        id: 'white-tray', name: 'Aligner / Tray Gel<br>◾', descriptor: 'Long-Term Whitening', price: 3000, strikePrice: 2500, tier: 'better',
         priceLabel: 'Tray ₹3,000 · Gel refill from ₹1,500',
         isTray: true,
         trayPrice: 3000, gelPrice: 2000,
@@ -1164,7 +1164,7 @@ display: inline-block; margin-left: 4px; font-style: italic; font-weight: inheri
         icon: ICON.flosser
       },
       {
-        id: 'addon-nightguard', name: 'Night Guard<br>★★', descriptor: 'Nightly Protection', price: 3000, strikePrice: 3500,
+        id: 'addon-nightguard', name: 'Night Guard / Tray<br>★★', descriptor: 'Nightly Protection', price: 3000, strikePrice: 3500,
         benefits: ['Protects against grinding and clenching','Reduces tooth wear', 'Can be used as whitening trays'],
         bestFor: ['🦷 Teeth grinding', '💢 Jaw discomfort', '🛡️ Smile protection'],
         badges: [{label:'Recommended', cls:'b-teal', icon:'★'}],
@@ -1268,8 +1268,8 @@ display: inline-block; margin-left: 4px; font-style: italic; font-weight: inheri
     let priceBlock;
     if(item.isTray){
       priceBlock = `<div class="tray-prices">
-        <div><span class="tp-label">Tray (one-time)</span><span class="tp-val">${strikeHTML(item.strikePrice)}${fmt(item.trayPrice)}</span></div>
-        <div><span class="tp-label">Gel refill</span><span class="tp-val">From ${fmt(item.gelPrice)}</span></div>
+        <div><span class="tp-label">Gel refill (From)</span><span class="tp-val">${strikeHTML(item.strikePrice)}${fmt(item.gelPrice)}</span></div>
+        <div><span class="tp-label">Tray (one-time)</span><span class="tp-val">${fmt(item.trayPrice)}</span></div>
       </div>`;
     } else if(item.price === null){
       priceBlock = `<div class="card-price card-price-note">Ask your dentist</div>`;
@@ -1447,7 +1447,7 @@ display: inline-block; margin-left: 4px; font-style: italic; font-weight: inheri
         key: 'whitening',
         items: Array.from(state.selections.whitening).map(id => {
           const it = lookup('whitening', id);
-          return { item: it, priceText: it.isTray ? `${fmt(it.trayPrice)} + refill` : fmt(it.price), badgeLabel: it.badges && it.badges[0] && it.badges[0].label };
+          return { item: it, priceText: it.isTray ? fmt(it.gelPrice) : fmt(it.price), badgeLabel: it.badges && it.badges[0] && it.badges[0].label };
         })
       },
       {
@@ -1473,7 +1473,7 @@ display: inline-block; margin-left: 4px; font-style: italic; font-weight: inheri
     const allItems = SECTIONS.flatMap(({ items }) => items);
     let totalSavings = 0;
     const rowsOut = allItems.map(({ item, priceText }) => {
-      const basePrice = item.isTray ? item.trayPrice : item.price;
+      const basePrice = item.isTray ? item.gelPrice : item.price;
       const hasStrike = item.strikePrice && basePrice !== null;
       if(hasStrike) totalSavings += (item.strikePrice - basePrice);
       const strikeHTML = hasStrike ? `<span class="price-strike">${fmt(item.strikePrice)}</span>` : '';
@@ -1681,7 +1681,7 @@ display: inline-block; margin-left: 4px; font-style: italic; font-weight: inheri
       });
       state.selections.whitening.forEach(id => {
         const it = lookup('whitening', id);
-        if(it.isTray){ addLine(it.name + ' (tray)', it.trayPrice, it.strikePrice, it.hidePriceNumber, it.priceTag); }
+        if(it.isTray){ addLine(it.name, it.gelPrice, it.strikePrice, it.hidePriceNumber, it.priceTag); }
         else { addLine(it.name, it.price, it.strikePrice, it.hidePriceNumber, it.priceTag); }
       });
       state.selections.fluoride.forEach(id => {
