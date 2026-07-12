@@ -112,6 +112,56 @@
   .tracker-bar{
     padding: 10px clamp(16px,4vw,40px);
   }
+  .smile-score{
+    flex:none; display:flex; flex-direction:row-reverse; align-items:center;
+    gap:10px; background:var(--teal-tint); border:1px solid var(--line-accent);
+    border-radius:999px; padding:6px 16px 6px 8px;
+    transition: box-shadow 300ms var(--ease), background 300ms var(--ease);
+  }
+  .smile-score-text{ display:flex; flex-direction:column; gap:1px; }
+  .smile-score-label{ font-size:10.5px; font-weight:800; color:var(--teal-deep); text-transform:uppercase; letter-spacing:0.05em; }
+  .smile-score-sub{ font-size:9.5px; font-weight:600; color:var(--ink-faint); }
+  .smile-score-ring-wrap{ position:relative; width:46px; height:46px; flex:none; }
+  .smile-score-ring{ width:46px; height:46px; transform:rotate(-90deg); overflow:visible; }
+  .smile-score-ring .ring-track{ fill:none; stroke:var(--surface); stroke-width:4; }
+  .smile-score-ring .ring-fill{
+    fill:none; stroke:var(--teal); stroke-width:4; stroke-linecap:round;
+    stroke-dasharray:100.53; stroke-dashoffset:100.53;
+    transition: stroke-dashoffset 650ms var(--ease-spring);
+  }
+  .smile-score-ring .ring-complete{
+    fill:var(--teal); opacity:0; transform-origin:20px 20px; transform:scale(0.5);
+    transition: opacity 420ms var(--ease-spring), transform 420ms var(--ease-spring);
+  }
+  .smile-score-num{
+    position:absolute; inset:0; display:flex; align-items:center; justify-content:center;
+    font-size:14px; font-weight:800; color:var(--teal); font-variant-numeric:tabular-nums;
+    transition: color 300ms var(--ease);
+  }
+  .smile-score.is-complete{ background:var(--teal-tint-deep); box-shadow:0 2px 10px rgba(20,107,97,0.18); }
+  .smile-score.is-complete .smile-score-ring .ring-complete{ opacity:1; transform:scale(1); }
+  .smile-score.is-complete .smile-score-num{ color:#fff; }
+  .smile-score.is-complete .smile-score-ring-wrap{ animation: scorePop 520ms var(--ease-spring); }
+  .smile-score.is-complete .smile-score-ring-wrap::after{
+    content:''; position:absolute; inset:-8px; border-radius:50%; z-index:-1;
+    background: radial-gradient(circle, var(--teal-tint) 0%, transparent 72%);
+    opacity:0; animation: scoreGlow 900ms var(--ease-out) forwards;
+  }
+  @keyframes scorePop{ 0%{ transform:scale(1); } 55%{ transform:scale(1.2); } 100%{ transform:scale(1); } }
+  @keyframes scoreGlow{ 0%{ opacity:0; } 40%{ opacity:1; } 100%{ opacity:0; } }
+  @media (prefers-reduced-motion: reduce){
+    .smile-score-ring .ring-fill, .smile-score-ring .ring-complete{ transition:none; }
+    .smile-score.is-complete .smile-score-ring-wrap{ animation:none; }
+    .smile-score.is-complete .smile-score-ring-wrap::after{ animation:none; opacity:0; }
+  }
+  @media (max-width:520px){
+    .smile-score{ padding:5px 12px 5px 6px; gap:8px; }
+    .smile-score-label{ font-size:9px; }
+    .smile-score-sub{ display:none; }
+    .smile-score-ring-wrap{ width:38px; height:38px; }
+    .smile-score-ring{ width:38px; height:38px; }
+    .smile-score-num{ font-size:12px; }
+  }
   .brandmark{
     font-family: var(--font-body);
     color: var(--ink);
@@ -123,28 +173,23 @@
     min-width:0;
   }
   .brandmark .dot{
-    width:34px;height:34px;
+    width:24px;height:24px;
     flex:none;
-    border-radius:50%;
-    background: var(--teal-tint);
     display:flex;align-items:center;justify-content:center;
-    font-size:18px;
     line-height:1;
+  }
+  .brandmark .logo-tooth{
+    width:24px; height:24px;
+    color: var(--teal);
   }
   .brand-text{ display:flex; flex-direction:column; gap:1px; min-width:0; }
   .brand-name{ font-weight:700; font-size:15px; color:var(--ink); }
   .brand-sub{ font-weight:600; font-size:9.5px; color:var(--ink-faint); text-transform:uppercase; letter-spacing:0.05em; }
-  .care-badge{
-    display:flex; align-items:center; gap:5px;
-    font-size:12px; font-weight:600; color:var(--teal); line-height:1.25;
-    background:var(--teal-tint); border:1px solid var(--line-accent);
-    padding:7px 14px; border-radius:999px; flex:none;
-  }
   @media (max-width:560px){
-    .brandmark .dot{ width:28px; height:28px; font-size:15px; }
+    .brandmark .dot{ width:22px; height:22px; }
+    .brandmark .logo-tooth{ width:22px; height:22px; }
     .brand-name{ font-size:13px; }
     .brand-sub{ font-size:8.5px; }
-    .care-badge{ font-size:10.5px; padding:6px 10px; white-space:normal; text-align:center; max-width:110px; }
   }
 
   /* ---- Progress tracker: nodes sit directly on a single hairline rail ---- */
@@ -297,18 +342,20 @@
   .welcome-eyebrow{
     display:inline-flex;
     align-items:center;
-    gap:6px;
-    font-size: 11px;
-    font-weight: 600;
+    gap:8px;
+    font-size: 12.5px;
+    font-weight: 700;
     letter-spacing: 0.06em;
     text-transform: uppercase;
-    color: var(--ink-soft);
-    background: var(--porcelain-dim);
-    border: none;
-    padding: 5px 12px;
+    color: var(--teal-deep);
+    background: var(--teal-tint);
+    border: 1px solid var(--line-accent);
+    padding: 8px 18px 8px 12px;
     border-radius: 999px;
-    margin-bottom: 20px;
+    margin-bottom: 24px;
+    box-shadow: var(--shadow-xs);
   }
+  .welcome-eyebrow-logo{ width:18px; height:18px; flex:none; color:var(--teal); }
   .welcome h1{
     font-family: var(--font-body);
     font-weight: 700;
@@ -787,10 +834,23 @@ display: inline-block; margin-left: 4px; font-style: italic; font-weight: inheri
   <header class="topbar" id="topbar" hidden>
     <div class="topbar-inner">
       <div class="brandmark" id="brandmark">
-        <span class="dot">🦷</span>
+        <svg class="dot logo-tooth" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" viewBox="0 0 2250 2250" preserveAspectRatio="xMidYMid meet"><path fill="currentColor" d="M 594.585938 531.605469 C 472.253906 547.417969 352.421875 612.605469 276.972656 704.421875 C 234.253906 756.292969 201.242188 826.195312 189.039062 890.828125 C 181.828125 930.21875 182.382812 1010.105469 190.425781 1047.554688 C 211.507812 1144.640625 255.890625 1215.652344 344.378906 1293.601562 C 429.535156 1368.21875 442.851562 1387.914062 475.582031 1488.882812 C 501.660156 1568.773438 527.179688 1614.265625 571.007812 1658.648438 C 635.914062 1724.113281 728.566406 1760.726562 819.273438 1756.84375 C 890.839844 1753.792969 948.535156 1734.097656 1032.863281 1683.613281 C 1081.960938 1654.488281 1121.628906 1635.347656 1149.644531 1627.578125 C 1167.953125 1622.585938 1179.046875 1621.476562 1215.941406 1621.476562 C 1255.054688 1621.476562 1263.929688 1622.308594 1289.449219 1628.691406 C 1318.019531 1635.902344 1329.671875 1639.785156 1417.328125 1670.574219 C 1482.792969 1693.875 1508.589844 1698.871094 1565.453125 1698.871094 C 1617.605469 1698.871094 1637.574219 1695.539062 1676.6875 1680.5625 C 1751.585938 1651.714844 1803.734375 1600.117188 1836.1875 1522.449219 C 1840.902344 1511.351562 1850.890625 1477.511719 1858.378906 1447.832031 C 1872.25 1392.628906 1884.453125 1361.5625 1902.761719 1334.933594 C 1907.753906 1327.71875 1931.332031 1301.921875 1954.910156 1277.234375 C 2019.265625 1210.382812 2050.335938 1163.503906 2070.308594 1103.308594 C 2083.621094 1063.089844 2087.78125 1040.34375 2090 998.457031 C 2095.828125 886.667969 2050.335938 777.652344 1964.066406 695.824219 C 1860.597656 597.902344 1718.851562 562.953125 1575.164062 600.121094 C 1529.117188 611.773438 1494.441406 626.195312 1441.738281 654.769531 C 1349.644531 704.699219 1298.882812 722.175781 1229.257812 728 C 1151.863281 734.65625 1049.230469 699.707031 933.558594 627.308594 C 814.554688 552.6875 744.652344 529.109375 645.902344 530.21875 C 622.324219 530.21875 599.300781 531.050781 594.585938 531.605469 Z M 594.585938 531.605469 " fill-opacity="1" fill-rule="nonzero"/></svg>
         <span class="brand-text"><span class="brand-name">Flosswork</span><span class="brand-sub">Dental Clinic</span></span>
       </div>
-      <div class="care-badge">💚 Let's Build Your Best Smile</div>
+      <div class="smile-score" id="smileScore" aria-live="polite" aria-label="Smile score">
+        <div class="smile-score-text">
+          <span class="smile-score-label">Smile Score</span>
+          <span class="smile-score-sub">out of 100</span>
+        </div>
+        <div class="smile-score-ring-wrap">
+          <svg class="smile-score-ring" viewBox="0 0 40 40">
+            <circle class="ring-track" cx="20" cy="20" r="16"></circle>
+            <circle class="ring-complete" cx="20" cy="20" r="14"></circle>
+            <circle class="ring-fill" id="smileScoreCircle" cx="20" cy="20" r="16"></circle>
+          </svg>
+          <span class="smile-score-num" id="smileScoreNum">0</span>
+        </div>
+      </div>
     </div>
     <div class="tracker-bar">
       <nav class="tracker" id="tracker" aria-label="Progress through smile plan"></nav>
@@ -803,7 +863,10 @@ display: inline-block; margin-left: 4px; font-style: italic; font-weight: inheri
     <section class="screen is-active" data-screen="welcome">
       <div class="screen-inner welcome">
         <div class="welcome-card">
-          <span class="welcome-eyebrow">✦ Flosswork Dental Clinic</span>
+          <span class="welcome-eyebrow">
+            <svg class="welcome-eyebrow-logo" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" viewBox="0 0 2250 2250" preserveAspectRatio="xMidYMid meet"><path fill="currentColor" d="M 594.585938 531.605469 C 472.253906 547.417969 352.421875 612.605469 276.972656 704.421875 C 234.253906 756.292969 201.242188 826.195312 189.039062 890.828125 C 181.828125 930.21875 182.382812 1010.105469 190.425781 1047.554688 C 211.507812 1144.640625 255.890625 1215.652344 344.378906 1293.601562 C 429.535156 1368.21875 442.851562 1387.914062 475.582031 1488.882812 C 501.660156 1568.773438 527.179688 1614.265625 571.007812 1658.648438 C 635.914062 1724.113281 728.566406 1760.726562 819.273438 1756.84375 C 890.839844 1753.792969 948.535156 1734.097656 1032.863281 1683.613281 C 1081.960938 1654.488281 1121.628906 1635.347656 1149.644531 1627.578125 C 1167.953125 1622.585938 1179.046875 1621.476562 1215.941406 1621.476562 C 1255.054688 1621.476562 1263.929688 1622.308594 1289.449219 1628.691406 C 1318.019531 1635.902344 1329.671875 1639.785156 1417.328125 1670.574219 C 1482.792969 1693.875 1508.589844 1698.871094 1565.453125 1698.871094 C 1617.605469 1698.871094 1637.574219 1695.539062 1676.6875 1680.5625 C 1751.585938 1651.714844 1803.734375 1600.117188 1836.1875 1522.449219 C 1840.902344 1511.351562 1850.890625 1477.511719 1858.378906 1447.832031 C 1872.25 1392.628906 1884.453125 1361.5625 1902.761719 1334.933594 C 1907.753906 1327.71875 1931.332031 1301.921875 1954.910156 1277.234375 C 2019.265625 1210.382812 2050.335938 1163.503906 2070.308594 1103.308594 C 2083.621094 1063.089844 2087.78125 1040.34375 2090 998.457031 C 2095.828125 886.667969 2050.335938 777.652344 1964.066406 695.824219 C 1860.597656 597.902344 1718.851562 562.953125 1575.164062 600.121094 C 1529.117188 611.773438 1494.441406 626.195312 1441.738281 654.769531 C 1349.644531 704.699219 1298.882812 722.175781 1229.257812 728 C 1151.863281 734.65625 1049.230469 699.707031 933.558594 627.308594 C 814.554688 552.6875 744.652344 529.109375 645.902344 530.21875 C 622.324219 530.21875 599.300781 531.050781 594.585938 531.605469 Z M 594.585938 531.605469 " fill-opacity="1" fill-rule="nonzero"/></svg>
+            Flosswork Dental Clinic
+          </span>
           <h1>Build Your Smile Plan</h1>
           <p>Design your ideal professional cleaning and whitening experience.</p>
           <div class="welcome-meta">
@@ -1240,6 +1303,7 @@ display: inline-block; margin-left: 4px; font-style: italic; font-weight: inheri
 
       triggerRipple(card);
       updateFooterMeta();
+      updateSmileScore();
     });
 
     return card;
@@ -1305,6 +1369,32 @@ display: inline-block; margin-left: 4px; font-style: italic; font-weight: inheri
         }).join('')}
       </div>
     `;
+
+    updateSmileScore();
+  }
+
+  /* ==========================================================
+     SMILE SCORE — rises only when a category has an active
+     selection; weighted by category, descending priority.
+     ========================================================== */
+  const SCORE_WEIGHTS = { scaling: 30, polishing: 25, whitening: 20, fluoride: 15, addons: 10 };
+  const RING_R = 16;
+  const RING_C = 2 * Math.PI * RING_R;
+
+  function updateSmileScore(){
+    const wrap = document.getElementById('smileScore');
+    const circle = document.getElementById('smileScoreCircle');
+    const numEl = document.getElementById('smileScoreNum');
+    if(!wrap || !circle || !numEl) return;
+
+    let score = state.selections.scaling ? SCORE_WEIGHTS.scaling : 0;
+    ['polishing','whitening','fluoride','addons'].forEach(key => {
+      if(state.selections[key] && state.selections[key].size > 0) score += SCORE_WEIGHTS[key];
+    });
+
+    numEl.textContent = score;
+    circle.style.strokeDashoffset = RING_C * (1 - score / 100);
+    wrap.classList.toggle('is-complete', score >= 100);
   }
 
   /* ==========================================================
