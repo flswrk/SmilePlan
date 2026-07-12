@@ -1,0 +1,1664 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1, user-scalable=no, viewport-fit=cover">
+<title>Build Your Smile Plan — Flosswork</title>
+<style>
+  /* ============================================================
+     NOTION UI TOKENS
+     ============================================================ */
+  :root{
+    --porcelain: #FFFFFF;
+    --porcelain-dim: #F5F6F6;
+    --surface: #FFFFFF;
+    --surface-sunken: #F6F7F7;
+    --surface-pressed: #EEF0F0;
+    --ink: #1F2426;
+    --ink-soft: #5C6567;
+    --ink-faint: #8B9294;
+    --teal: #146B61;
+    --teal-deep: #0D5049;
+    --teal-tint: #E6F2F0;
+    --teal-tint-deep: #D9ECE9;
+    --champagne: #146B61;
+    --champagne-deep: #0D5049;
+    --champagne-tint: #E6F2F0;
+    --clay: #787774;
+    --line: rgba(31,36,38,0.09);
+    --line-soft: rgba(31,36,38,0.055);
+    --line-accent: #CFE3E0;
+    --track: rgba(31,36,38,0.13);
+    --shadow-xs: 0 1px 2px rgba(20,30,32,0.04);
+    --shadow-sm: 0 1px 3px rgba(20,30,32,0.045), 0 1px 2px rgba(20,30,32,0.03);
+    --shadow-md: 0 8px 20px rgba(20,30,32,0.07), 0 2px 6px rgba(20,30,32,0.04);
+    --shadow-lg: 0 16px 40px rgba(20,30,32,0.11), 0 4px 14px rgba(20,30,32,0.06);
+    --shadow-selected: 0 0 0 1.5px var(--teal), 0 8px 20px rgba(20,107,97,0.16);
+    --shadow-focus: 0 0 0 4px var(--teal-tint);
+    --radius-sm: 8px;
+    --radius-md: 12px;
+    --radius-lg: 16px;
+    --radius-pill: 999px;
+    --ease: cubic-bezier(0.25, 0.46, 0.45, 0.94);
+    --ease-soft: cubic-bezier(0.4, 0, 0.2, 1);
+    --ease-out: cubic-bezier(0.16, 1, 0.3, 1);
+    --ease-spring: cubic-bezier(0.34, 1.45, 0.64, 1);
+    --dur-fast: 120ms;
+    --dur-med: 200ms;
+    --dur-slow: 320ms;
+    --font-display: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+    --font-body: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+  }
+
+  *,*::before,*::after{ box-sizing: border-box; }
+  html,body{ height:100%; }
+  body{
+    margin:0;
+    font-family: var(--font-body);
+    background: #FFFFFF;
+    color: var(--ink);
+    -webkit-font-smoothing: antialiased;
+    text-rendering: optimizeLegibility;
+    overflow-x: hidden;
+    font-size: 14px;
+  }
+  img,svg{ display:block; max-width:100%; }
+  button{ font-family: inherit; }
+
+  @media (prefers-reduced-motion: reduce){
+    *,*::before,*::after{
+      animation-duration: 0.01ms !important;
+      animation-iteration-count: 1 !important;
+      transition-duration: 0.01ms !important;
+      scroll-behavior: auto !important;
+    }
+  }
+
+  :focus-visible{
+    outline: 2px solid var(--teal);
+    outline-offset: 2px;
+    border-radius: 8px;
+    transition: outline-offset var(--dur-fast) var(--ease);
+  }
+
+  #app{
+    min-height: 100vh;
+    min-height: 100dvh;
+    display:flex;
+    flex-direction:column;
+    position:relative;
+  }
+
+  /* ============================================================
+     TOP BAR — Notion sidebar-header style
+     ============================================================ */
+  .topbar{
+    position: sticky;
+    top:0;
+    z-index: 40;
+    background: rgba(255,255,255,0.85);
+    backdrop-filter: blur(12px) saturate(1.4);
+    -webkit-backdrop-filter: blur(12px) saturate(1.4);
+  }
+  .topbar-inner{
+    max-width: 1100px;
+    margin: 0 auto;
+    display:flex;
+    align-items:center;
+    justify-content:space-between;
+    gap:8px;
+    padding: 12px clamp(16px,4vw,40px) 4px;
+  }
+  .tracker-bar{
+    padding: 10px clamp(16px,4vw,40px);
+  }
+  .brandmark{
+    font-family: var(--font-body);
+    color: var(--ink);
+    white-space: nowrap;
+    display:flex;
+    align-items:center;
+    gap:10px;
+    letter-spacing: -0.01em;
+    min-width:0;
+  }
+  .brandmark .dot{
+    width:34px;height:34px;
+    flex:none;
+    border-radius:50%;
+    background: var(--teal-tint);
+    display:flex;align-items:center;justify-content:center;
+    font-size:18px;
+    line-height:1;
+  }
+  .brand-text{ display:flex; flex-direction:column; gap:1px; min-width:0; }
+  .brand-name{ font-weight:700; font-size:15px; color:var(--ink); }
+  .brand-sub{ font-weight:600; font-size:9.5px; color:var(--ink-faint); text-transform:uppercase; letter-spacing:0.05em; }
+  .care-badge{
+    display:flex; align-items:center; gap:5px;
+    font-size:12px; font-weight:600; color:var(--teal); line-height:1.25;
+    background:var(--teal-tint); border:1px solid var(--line-accent);
+    padding:7px 14px; border-radius:999px; flex:none;
+  }
+  @media (max-width:560px){
+    .brandmark .dot{ width:28px; height:28px; font-size:15px; }
+    .brand-name{ font-size:13px; }
+    .brand-sub{ font-size:8.5px; }
+    .care-badge{ font-size:10.5px; padding:6px 10px; white-space:normal; text-align:center; max-width:110px; }
+  }
+
+  /* ---- Progress tracker: nodes sit directly on a single hairline rail ---- */
+  .tracker{ max-width:1100px; margin:0 auto; position:relative; }
+  .tracker-stages{
+    display:grid;
+    grid-template-columns: repeat(6, minmax(0,1fr));
+    column-gap: 2px;
+    height:34px;
+  }
+  .tracker-rail{
+    position:absolute;
+    left:calc(100%/12); right:calc(100%/12); top:9px;
+    height:2px;
+    background: var(--track);
+    border-radius: 999px;
+    overflow:hidden;
+    z-index:0;
+  }
+  .tracker-rail-fill{
+    position:absolute; inset:0;
+    background: var(--teal);
+    transform-origin:left;
+    transform: scaleX(var(--p, 0));
+    transition: transform 460ms var(--ease-out);
+    border-radius: 999px;
+  }
+  .tracker-stage{
+    position:relative;
+    z-index:1;
+    font-size: 10.5px;
+    font-weight: 500;
+    color: var(--ink-faint);
+    letter-spacing: 0.01em;
+    display:flex;
+    flex-direction:column;
+    align-items:center;
+    min-width: 0;
+    transition: color var(--dur-med) var(--ease);
+  }
+
+  .stage-head{
+    width:18px; height:18px; flex:none;
+    display:flex; align-items:center; justify-content:center;
+  }
+  .stage-mark{
+    width:7px; height:7px;
+    border-radius:50%;
+    background: var(--surface);
+    border:2px solid var(--track);
+    box-sizing:border-box;
+    display:flex; align-items:center; justify-content:center;
+    transition: all var(--dur-med) var(--ease-spring);
+  }
+  .stage-mark svg{ width:9px; height:9px; opacity:0; transform:scale(0.4); transition: opacity var(--dur-fast) var(--ease), transform var(--dur-med) var(--ease-spring); }
+
+  .tracker-stage.is-done .stage-mark,
+  .tracker-stage.is-skipped .stage-mark{
+    width:18px; height:18px; border-width:0;
+    box-shadow: 0 0 0 3px var(--surface);
+  }
+  .tracker-stage.is-done .stage-mark{ background: var(--teal); }
+  .tracker-stage.is-skipped .stage-mark{ background: var(--ink-faint); }
+  .tracker-stage.is-done .stage-mark svg,
+  .tracker-stage.is-skipped .stage-mark svg{ opacity:1; transform:scale(1); }
+
+  .tracker-stage.is-current .stage-mark{
+    width:12px; height:12px; border-width:0;
+    background: var(--teal);
+    box-shadow: 0 0 0 3px var(--surface), 0 0 0 6px var(--teal-tint);
+    animation: trackerPulse 2.4s ease-in-out infinite;
+  }
+  @keyframes trackerPulse{
+    0%, 100% { box-shadow: 0 0 0 3px var(--surface), 0 0 0 6px var(--teal-tint); }
+    50% { box-shadow: 0 0 0 3px var(--surface), 0 0 0 9px var(--teal-tint); }
+  }
+  @media (prefers-reduced-motion: reduce){ .tracker-stage.is-current .stage-mark{ animation:none; } }
+
+  .stage-text{
+    display:none;
+    max-width: 100%;
+    margin-top:6px;
+    overflow:hidden;
+    text-overflow:ellipsis;
+    white-space:nowrap;
+  }
+  .tracker-stage.is-done{ color: var(--ink-soft); }
+  .tracker-stage.is-skipped{ color: var(--ink-faint); }
+  .tracker-stage.is-current{ color: var(--teal); font-weight: 700; }
+  .tracker-stage.is-current .stage-text{
+    display:block; position:absolute;
+    left:50%; transform:translateX(-50%); top:24px; max-width:none;
+  }
+  @media (min-width: 620px){
+    .stage-text{ display:block; }
+    .tracker-stage.is-current .stage-text{ position:static; transform:none; top:auto; }
+    .tracker-stages{ height:auto; }
+  }
+
+  /* ============================================================
+     SCREENS
+     ============================================================ */
+  .screens{
+    flex:1;
+    position:relative;
+    z-index:1;
+  }
+  .screen{
+    position:absolute;
+    inset:0;
+    display:flex;
+    flex-direction:column;
+    opacity:0;
+    pointer-events:none;
+    transform: translateX(16px);
+    transition: opacity var(--dur-slow) var(--ease-out), transform var(--dur-slow) var(--ease-out);
+  }
+  .screen.is-active{
+    position:relative;
+    opacity:1;
+    pointer-events:auto;
+    transform:none;
+  }
+  .screen.is-leaving-back{ transform: translateX(-24px); }
+
+  .screen-inner{
+    max-width: 1100px;
+    width:100%;
+    margin: 0 auto;
+    padding: clamp(20px,4vw,40px) clamp(16px,4vw,40px) 140px;
+    flex:1;
+  }
+
+  /* ============================================================
+     WELCOME SCREEN
+     ============================================================ */
+  .welcome{
+    min-height: 100dvh;
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    text-align:center;
+  }
+  [data-screen="welcome"] .screen-inner{ padding-bottom:0; }
+  .welcome-card{
+    max-width: 520px;
+    padding: clamp(24px,5vw,16px) 8px;
+  }
+  .welcome-eyebrow{
+    display:inline-flex;
+    align-items:center;
+    gap:6px;
+    font-size: 11px;
+    font-weight: 600;
+    letter-spacing: 0.06em;
+    text-transform: uppercase;
+    color: var(--ink-soft);
+    background: var(--porcelain-dim);
+    border: none;
+    padding: 5px 12px;
+    border-radius: 999px;
+    margin-bottom: 20px;
+  }
+  .welcome h1{
+    font-family: var(--font-body);
+    font-weight: 700;
+    font-size: clamp(28px, 4.5vw, 40px);
+    line-height: 1.15;
+    letter-spacing: -0.02em;
+    margin: 0 0 12px;
+    color: var(--ink);
+  }
+  .welcome p{
+    font-size: clamp(14px,1.6vw,15px);
+    line-height: 1.6;
+    color: var(--ink-soft);
+    margin: 0 auto 8px;
+    max-width: 420px;
+  }
+  .welcome-meta{
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    gap: 6px;
+    margin: 20px 0 28px;
+    font-size: 12px;
+    color: var(--ink-faint);
+    font-weight: 500;
+  }
+  .welcome-meta svg{ width:13px; height:13px; flex:none; }
+
+  .patient-name-field{ max-width:320px; margin:0 auto 20px; position:relative; }
+  .patient-name-field input{
+    width:100%; font-family:inherit; font-size:15px; font-weight:500;
+    text-align:center; color:var(--ink);
+    background:var(--surface); border:1.5px solid var(--line);
+    border-radius:999px; padding:11px 40px;
+    transition:border-color var(--dur-fast) var(--ease), box-shadow var(--dur-fast) var(--ease);
+  }
+  .patient-name-field input::placeholder{ color:var(--ink-faint); font-weight:400; }
+  .patient-name-field input:focus-visible{ outline:none; border-color:var(--teal); box-shadow:var(--shadow-focus); }
+  .patient-name-clear{
+    position:absolute; top:50%; right:6px; transform:translateY(-50%);
+    width:32px; height:32px; border-radius:50%;
+    appearance:none; border:none; background:var(--porcelain-dim);
+    color:var(--ink-faint); cursor:pointer;
+    display:flex; align-items:center; justify-content:center;
+    transition:background var(--dur-fast) var(--ease), color var(--dur-fast) var(--ease);
+  }
+  .patient-name-clear svg{ width:12px; height:12px; }
+  .patient-name-clear[hidden]{ display:none; }
+
+  .patient-tag-inline{
+display: inline-block; margin-left: 4px; font-style: italic; font-weight: inherit; color: var(--teal);
+}
+  .patient-tag-inline[hidden]{ display:none; }
+
+  .section-head{ margin-bottom: 20px; }
+  .section-eyebrow{
+    font-size: 11px;
+    font-weight: 600;
+    letter-spacing: 0.06em;
+    text-transform: uppercase;
+    color: var(--ink-faint);
+    margin: 0 0 6px;
+    display:flex;
+    align-items:center;
+    gap:8px;
+  }
+  .section-eyebrow.optional::after,
+  .section-eyebrow.mandatory::after{
+    content: attr(data-badge);
+    font-weight: 500;
+    letter-spacing: 0.02em;
+    text-transform: none;
+    color: var(--teal);
+    background: var(--teal-tint);
+    padding: 2px 8px;
+    border-radius: 999px;
+    font-size: 11px;
+  }
+  .section-head h2{
+    font-family: var(--font-body);
+    font-weight: 700;
+    font-size: clamp(22px,5vw,26px);
+    margin: 0 0 4px;
+    color: var(--ink);
+    letter-spacing: -0.02em;
+  }
+  .section-head p{
+    color: var(--ink-soft);
+    font-size: 14px;
+    margin:0;
+    max-width: 560px;
+    line-height: 1.5;
+  }
+
+  /* CARD GRID — mobile-first: 1 col by default, scale up with space */
+  .grid{
+    display:grid;
+    grid-template-columns: 1fr;
+    gap: 16px;
+    align-items: stretch;
+  }
+  @media (min-width: 640px){ .grid{ grid-template-columns: repeat(2,1fr); gap:18px; } }
+  @media (min-width: 1000px){ .grid{ grid-template-columns: repeat(3,1fr); gap:20px; } }
+  @media (min-width: 1300px){ .grid{ grid-template-columns: repeat(4,1fr); } }
+
+  .card{
+    position:relative;
+    background: var(--surface);
+    border: 1px solid var(--line);
+    border-radius: var(--radius-md);
+    padding: 20px;
+    display:flex;
+    flex-direction:column;
+    gap: 14px;
+    cursor:pointer;
+    text-align:left;
+    box-shadow: var(--shadow-xs);
+    transition: background var(--dur-fast) var(--ease), border-color var(--dur-fast) var(--ease),
+      box-shadow var(--dur-med) var(--ease-out), transform var(--dur-med) var(--ease-out);
+    -webkit-tap-highlight-color: transparent;
+    min-height: 100%;
+    overflow:hidden;
+    opacity:0;
+    transform: translateY(6px);
+    animation: cardIn 180ms var(--ease) forwards;
+    animation-delay: calc(var(--stagger,0) * 35ms);
+  }
+  @keyframes cardIn{ to{ opacity:1; transform:none; } }
+  @media (prefers-reduced-motion: reduce){ .card{ opacity:1; transform:none; animation:none; } }
+  .card:active{ background: var(--teal-tint-deep); transform: scale(0.98); box-shadow: var(--shadow-sm); }
+  .card.is-selected{ border-color: var(--teal); box-shadow: var(--shadow-selected); background: var(--teal-tint); animation: cardIn 180ms var(--ease) forwards, cardSettle 420ms var(--ease-spring); }
+  .card.is-mandatory{ cursor:default; }
+
+  @keyframes cardSettle{ 0%{ transform:scale(1.015); } 100%{ transform:scale(1); } }
+  @media (prefers-reduced-motion: reduce){ .card.is-selected{ animation:none; } }
+
+  .card-ripple{ display:none; }
+
+  .card[data-tier="best"].is-selected{ border-color:var(--teal); box-shadow:var(--shadow-selected); }
+
+  .card.is-hero.is-selected{ box-shadow: 0 0 0 2px var(--teal), 0 8px 20px rgba(20,107,97,0.16); border-color:var(--teal); }
+
+  .tray-card{ grid-column: span 1; }
+  @media (min-width: 640px){ .tray-card{ grid-column: span 2; } }
+
+  .card-check{
+    position:absolute; top:14px; right:14px;
+    width:22px; height:22px;
+    border-radius:7px;
+    border: 1.5px solid var(--line);
+    background: var(--surface);
+    display:flex; align-items:center; justify-content:center;
+    transition: background var(--dur-fast) var(--ease), border-color var(--dur-fast) var(--ease), transform var(--dur-fast) var(--ease-out);
+    flex:none; z-index:1;
+  }
+  .card.is-selected .card-check{ background: var(--teal); border-color: var(--teal); transform: scale(1.08); }
+  .card-check svg{ width:12px; height:12px; opacity:0; transform:scale(0.6); transition: opacity var(--dur-fast) var(--ease), transform var(--dur-med) var(--ease-spring); }
+  .card.is-selected .card-check svg{ opacity:1; transform:scale(1); }
+
+  .card-header{ padding-bottom:0; margin-bottom:4px; }
+  .card-name{
+    font-weight:700; font-size:19px; line-height:1.35;
+    color:var(--ink); margin:0; padding-right:30px;
+    min-height:2.7em; display:flex; align-items:flex-start;
+  }
+  .card-price-footer{
+    margin-top:auto; padding-top:12px; border-top:1px solid var(--line-soft);
+  }
+  .card-price{
+    font-size:15px; font-weight:600; color:var(--ink);
+    display:flex; align-items:baseline; gap:2px;
+  }
+  .card-price .currency{ font-size:11px; font-weight:500; color:var(--ink-soft); }
+  .card-price .unit{ font-size:10px; font-weight:400; color:var(--ink-faint); }
+  .card-price.card-price-note{ font-size:12px; font-weight:500; color:var(--ink-faint); font-style:normal; }
+  .price-strike{ font-size:12px; font-weight:500; color:var(--ink-faint); text-decoration:line-through; margin-right:5px; }
+  .price-tag{ font-size:10px; font-weight:700; color:var(--ink-faint); text-transform:uppercase; letter-spacing:0.03em; margin-right:4px; }
+
+  .card-badges{ display:flex; flex-wrap:wrap; gap:6px; }
+  .badge{
+    font-size:10px; font-weight:700; letter-spacing:0.02em; text-transform:uppercase;
+    display:inline-flex; align-items:center; gap:3px; white-space:nowrap;
+    background:transparent; border:1.25px solid currentColor; padding:4px 11px; border-radius:999px;
+  }
+  .badge.b-gold{ color:var(--teal); }
+  .badge.b-teal{ color:var(--teal); }
+  .badge.b-clay{ color:var(--ink-soft); }
+  .badge.badge-solid-accent{ background:var(--teal); border-color:var(--teal); color:#fff; }
+  .badge.badge-solid-gold{
+    background:linear-gradient(135deg, #F2D488 0%, #C9A227 55%, #9C7A1B 100%);
+    border-color:#C9A227; color:#3B2A06; text-shadow:0 1px 0 rgba(255,255,255,0.25);
+  }
+
+  .card-benefits{
+    list-style:none; margin:0; padding:0;
+    display:flex; flex-direction:column; gap:8px;
+  }
+  .card-benefits li{
+    font-size:12px; line-height:1.5; color:var(--ink-soft);
+    padding-left:14px; position:relative;
+  }
+  .card-benefits li::before{
+    content:""; width:4px; height:4px; border-radius:50%;
+    background:var(--ink-faint); position:absolute; left:0; top:7px;
+  }
+
+  .card-chips{ display:flex; flex-wrap:wrap; gap:6px; margin-top:auto; padding-top:12px; }
+  .chip{
+    font-size:10px; font-weight:500; color:var(--ink-soft);
+    background:var(--surface-sunken); border:none;
+    padding:4px 10px; border-radius:999px; white-space:nowrap;
+    transition: background var(--dur-fast) var(--ease);
+  }
+
+  .feature-card{
+    position:relative; overflow:hidden;
+    background:var(--teal-tint); border:1px solid var(--line); border-radius:var(--radius-md);
+    box-shadow: var(--shadow-sm);
+    padding:clamp(20px,3vw,28px); display:flex; flex-direction:column; gap:16px;
+  }
+  .feature-card .card-name{ font-size:24px; padding-right:0; }
+  .feature-card .card-price{ font-size:17px; }
+  .feature-card .card-benefits li{ font-size:13px; }
+
+  .tray-prices{
+    display:flex; gap:20px; flex-wrap:wrap;
+    padding:10px 0;
+    border-radius:8px; margin:2px 0;
+  }
+  .tray-prices div{ display:flex; flex-direction:column; gap:3px; }
+  .tray-prices .tp-label{ font-size:10px; color:var(--ink-faint); font-weight:600; text-transform:uppercase; letter-spacing:0.03em; }
+  .tray-prices .tp-val{ font-size:13px; font-weight:600; color:var(--ink); }
+
+  .footerbar{
+    position: sticky; bottom:0; z-index:30;
+    background: rgba(255,255,255,0.85);
+    backdrop-filter: blur(12px) saturate(1.4);
+    -webkit-backdrop-filter: blur(12px) saturate(1.4);
+    border-top: 1px solid var(--line-soft);
+    box-shadow: 0 -8px 24px rgba(15,15,15,0.04);
+    padding: 12px clamp(16px,4vw,40px);
+    padding-bottom: calc(12px + env(safe-area-inset-bottom));
+  }
+  .footerbar-inner{
+    max-width:1100px; margin:0 auto;
+    display:flex; align-items:center; justify-content:space-between; gap:10px;
+  }
+  .footer-meta{ font-size:12px; color:var(--ink-faint); font-weight:500; display:flex; align-items:center; gap:6px; min-width:0; }
+  .footer-meta strong{ color:var(--ink); font-weight:600; }
+  .footer-buttons{ display:flex; align-items:center; gap:8px; flex-wrap:wrap; justify-content:flex-end; }
+  @media (max-width:400px){
+    .footerbar{ padding-left:12px; padding-right:12px; }
+    .footerbar-inner{ gap:6px; }
+    .footer-buttons{ gap:6px; }
+    .btn{ padding:10px 14px; font-size:13px; }
+    #backBtn{ width:40px; padding:10px; }
+    .staff-trigger-btn{ padding:5px 10px; font-size:10px; }
+  }
+
+  .btn{
+    appearance:none; border:none; cursor:pointer;
+    font-family:inherit; font-weight:500; font-size:14px;
+    border-radius:999px; padding:12px 18px; min-height:44px;
+    display:inline-flex; align-items:center; justify-content:center; gap:6px;
+    transition: background var(--dur-fast) var(--ease), opacity var(--dur-fast) var(--ease),
+      transform var(--dur-fast) var(--ease-out), box-shadow var(--dur-fast) var(--ease-out), border-color var(--dur-fast) var(--ease);
+    white-space:nowrap;
+  }
+  .btn:active{ transform: scale(0.96); }
+  .btn-primary{ background:var(--teal); color:#fff; box-shadow: 0 1px 2px rgba(20,107,97,0.22), 0 4px 12px rgba(20,107,97,0.20); }
+  .btn-primary:active{ transform: scale(0.96); background:var(--teal-deep); }
+  .btn-ghost{ background:transparent; color:var(--ink-soft); border:1px solid var(--line); }
+  .btn-ghost:active{ background:var(--teal-tint); }
+  .btn-lg{ padding:13px 24px; min-height:50px; font-size:15px; font-weight:600; width:100%; max-width:320px; }
+  .btn svg{ width:14px; height:14px; }
+  #backBtn{ width:44px; padding:12px; }
+  .btn[hidden]{ display:none !important; }
+
+  .summary-hero{ text-align:center; max-width:540px; margin:8px auto 32px; }
+  .summary-burst{ width:48px; height:48px; margin:0 auto 14px; overflow:visible; }
+  .summary-burst svg{ width:100%; height:100%; overflow:visible; }
+  .summary-burst svg circle:first-child{
+    transform-origin:32px 32px;
+    animation: burstRingPulse 2000ms ease-out infinite;
+  }
+  .summary-burst svg circle:nth-child(2){
+    transform-origin:32px 32px;
+    animation: burstScalePulse 2000ms ease-in-out infinite;
+  }
+  @keyframes burstRingPulse{
+    0%{ opacity:0.5; transform:scale(0.85); }
+    100%{ opacity:0; transform:scale(1.7); }
+  }
+  @keyframes burstScalePulse{
+    0%, 100%{ transform:scale(1); }
+    50%{ transform:scale(1.08); }
+  }
+  @media (prefers-reduced-motion: reduce){
+    .summary-burst svg circle:first-child,
+    .summary-burst svg circle:nth-child(2){ animation:none; }
+  }
+  .summary-hero h2{
+    font-family:var(--font-body); font-weight:700;
+    font-size:clamp(22px,3.5vw,28px); color:var(--ink);
+    margin:0 0 8px; letter-spacing:-0.02em;
+  }
+  .summary-hero p{ color:var(--ink-soft); font-size:14px; line-height:1.5; margin:0; }
+
+  .summary-list{
+    display:grid; grid-template-columns:1fr; gap:14px;
+    max-width:700px; margin:0 auto 24px; align-items:stretch;
+  }
+  @media (min-width:640px){ .summary-list{ grid-template-columns:repeat(2,1fr); gap:16px; margin-bottom:28px; } }
+
+  .summary-card{
+    background:var(--surface); border:1px solid var(--line);
+    border-radius:var(--radius-lg); box-shadow:var(--shadow-sm);
+    padding:20px;
+    display:flex; flex-direction:column; gap:14px;
+    opacity:0; transform:translateY(6px);
+    animation:cardFadeIn 220ms var(--ease) forwards;
+    transition: box-shadow var(--dur-med) var(--ease-out), transform var(--dur-med) var(--ease-out);
+  }
+  @media (prefers-reduced-motion:reduce){ .summary-card{ opacity:1; transform:none; animation:none; } }
+  @keyframes cardFadeIn{ to{ opacity:1; transform:none; } }
+
+  .summary-card-head{ display:flex; align-items:center; gap:10px; }
+  .summary-card-title{
+    font-size:11px; font-weight:700; text-transform:uppercase;
+    letter-spacing:0.05em; color:var(--ink-faint);
+  }
+
+  .summary-card-rows{ display:flex; flex-direction:column; gap:14px; flex:1; }
+  .summary-card-row{
+    display:flex; align-items:flex-end; justify-content:space-between; gap:12px; flex-wrap:wrap;
+    padding-top:14px; border-top:1px solid var(--line-soft);
+  }
+  .summary-card-row:first-child{ padding-top:0; border-top:none; }
+  .summary-card-info{ min-width:0; max-width:100%; }
+  .summary-card-name{ font-weight:700; font-size:17px; color:var(--ink); line-height:1.3; overflow-wrap:break-word; }
+  .summary-card-descriptor{ font-size:12px; color:var(--ink-soft); margin-top:3px; overflow-wrap:break-word; }
+  .summary-card-badge{
+    display:inline-flex; align-items:center; gap:4px; max-width:100%;
+    font-size:10px; font-weight:700; letter-spacing:0.02em; text-transform:uppercase;
+    color:var(--teal); margin-top:8px; white-space:normal; overflow-wrap:break-word;
+  }
+  .summary-card-price{
+    font-weight:700; font-size:16px; color:var(--ink); flex:none; white-space:nowrap;
+  }
+
+  .summary-total-card{
+    max-width:600px; margin:0 auto 28px;
+    background:var(--surface); border:1px solid var(--line);
+    border-radius:var(--radius-lg); box-shadow:var(--shadow-sm);
+    padding:8px 22px;
+  }
+  .summary-total-row{
+    display:flex; align-items:center; justify-content:space-between; gap:12px;
+    padding:12px 0; border-top:1px solid var(--line-soft);
+  }
+  .summary-total-row:first-child{ border-top:none; }
+  .summary-total-name{ font-size:14px; font-weight:600; color:var(--ink); }
+  .summary-total-price{ font-size:14px; font-weight:700; color:var(--ink); white-space:nowrap; display:flex; align-items:baseline; gap:6px; }
+  .summary-total-savings{ border-top:1px solid var(--line-soft); background:var(--teal-tint); margin:0 -22px -8px; padding:12px 22px; border-radius:0 0 var(--radius-lg) var(--radius-lg); }
+  .summary-total-savings .summary-total-name{ color:var(--teal); font-weight:700; }
+  .summary-total-savings .summary-total-price{ color:var(--teal); }
+
+  .summary-benefits{
+    max-width:600px; margin:0 auto 28px;
+    background:var(--teal-tint); border:1px solid var(--line);
+    border-radius:var(--radius-lg);
+    box-shadow: var(--shadow-xs);
+    padding:22px 24px;
+  }
+  .summary-benefits h3{
+    font-weight:700; font-size:15px; color:var(--ink); margin:0 0 2px;
+    letter-spacing:-0.01em;
+  }
+  .summary-benefits .benefits-subtitle{
+    font-size:12px; color:var(--ink-soft); margin:0 0 16px;
+  }
+  .benefit-grid{ display:grid; grid-template-columns:1fr; gap:12px 20px; }
+  @media (min-width:480px){ .benefit-grid{ grid-template-columns:repeat(2,1fr); } }
+  .benefit-grid div{
+    display:flex; align-items:center; gap:9px;
+    font-size:13px; font-weight:600; color:var(--ink);
+  }
+  .benefit-grid div::before{
+    content:"✓"; flex:none;
+    width:18px; height:18px; border-radius:50%;
+    background:var(--teal); color:#fff;
+    font-size:10px; font-weight:700;
+    display:flex; align-items:center; justify-content:center;
+  }
+
+  .summary-closing{ max-width:520px; margin:0 auto; text-align:center; padding:0 8px; }
+  .summary-closing p{ font-size:13px; line-height:1.6; color:var(--ink-soft); margin:0 0 8px; }
+  .summary-closing .signature{ font-size:13px; color:var(--ink-faint); margin-top:14px; font-style:normal; }
+
+  .staff-trigger-btn{
+    appearance:none; border:1px solid var(--line); background:transparent;
+    color:var(--ink-faint); font-family:inherit; font-size:11px; font-weight:500;
+    padding:5px 14px; border-radius:999px; cursor:pointer;
+    transition:all var(--dur-fast) var(--ease);
+    flex:none; white-space:nowrap;
+  }
+  .staff-trigger-btn:active{ background:var(--teal-tint); }
+
+  .sr-only{ position:absolute; width:1px;height:1px; padding:0; margin:-1px; overflow:hidden; clip:rect(0,0,0,0); white-space:nowrap; border:0; }
+
+  .staff-panel{
+    position:fixed; right:16px; bottom:16px; z-index:100;
+    width:min(300px,calc(100vw - 32px));
+    background:#191919; color:#E6E6E5;
+    border:1px solid #333; border-radius:var(--radius-lg);
+    box-shadow:0 12px 32px rgba(0,0,0,0.4), 0 2px 8px rgba(0,0,0,0.3);
+    padding:14px 16px 16px; font-size:13px;
+    opacity:0; transform:translateY(8px) scale(0.98);
+    transition:opacity 150ms var(--ease-out), transform 150ms var(--ease-out);
+    pointer-events:none;
+  }
+  .staff-panel.is-visible{ opacity:1; transform:none; pointer-events:auto; }
+  .staff-panel-head{ font-weight:600; font-size:11px; letter-spacing:0.05em; text-transform:uppercase; color:#787774; margin-bottom:10px; display:flex; align-items:center; gap:6px; }
+  .staff-panel-head::before{ content:""; width:5px;height:5px;border-radius:50%; background:#1D8A7C; }
+  .staff-panel-head span{ flex:1; }
+  .staff-panel-close{
+    appearance:none; border:none; background:transparent; color:#787774;
+    cursor:pointer; padding:2px; display:flex; align-items:center; justify-content:center;
+    border-radius:6px; transition:background 120ms ease, color 120ms ease;
+  }
+  .staff-panel-close:hover{ background:#2F2F2F; color:#E6E6E5; }
+  .staff-panel-close svg{ width:14px; height:14px; }
+  .staff-panel-list{ display:flex; flex-direction:column; gap:5px; margin-bottom:10px; }
+  .staff-row{ display:flex; justify-content:space-between; gap:10px; font-size:12px; color:#9B9A97; padding-bottom:5px; border-bottom:1px solid #2F2F2F; }
+  .staff-row span:first-child{ flex:1; min-width:0; }
+  .staff-row span:last-child{ font-weight:600; color:#E6E6E5; white-space:nowrap; display:flex; align-items:baseline; gap:5px; }
+  .staff-strike{ font-size:10px; font-weight:500; color:#787774; }
+  .staff-row.staff-savings span:first-child{ color:#1D8A7C; font-weight:600; }
+  .staff-row.staff-savings span:last-child{ color:#1D8A7C; }
+  .staff-panel-discount{ display:flex; align-items:center; justify-content:space-between; gap:10px; margin-bottom:10px; }
+  .staff-panel-discount label{ font-size:11px; color:#787774; font-weight:500; }
+  .staff-panel-discount input{
+    flex:1; max-width:120px; background:#2F2F2F; border:1px solid #444;
+    border-radius:8px; padding:5px 8px; color:#E6E6E5; font-size:12px; font-family:inherit;
+  }
+  .staff-panel-discount input::placeholder{ color:#555; }
+  .staff-panel-discount input:focus-visible{ outline:2px solid #1D8A7C; outline-offset:1px; }
+  .staff-panel-total{ display:flex; justify-content:space-between; align-items:baseline; font-weight:600; font-size:14px; padding-top:8px; border-top:1px solid #333; }
+  .staff-panel-total .label{ font-size:10px; font-weight:500; color:#787774; text-transform:uppercase; letter-spacing:0.04em; }
+  .staff-panel-total > span:last-child{ display:flex; align-items:baseline; gap:5px; }
+  .staff-strike-total{ font-size:11px; }
+
+  /* ============================================================
+     HOVER — only for devices with a real pointer (mouse/trackpad).
+     Prevents "stuck hover" after tapping on touch screens; touch
+     feedback is handled entirely via :active above.
+     ============================================================ */
+  @media (hover:hover) and (pointer:fine){
+    .patient-name-clear:hover{ background:var(--line); color:var(--ink-soft); }
+    .card:hover{ background: var(--teal-tint); box-shadow: var(--shadow-md); transform: translateY(-2px); }
+    .card.is-selected:hover{ background: var(--teal-tint-deep); transform: translateY(-2px); }
+    .card.is-mandatory:hover{ background: var(--surface); box-shadow: var(--shadow-xs); transform:none; }
+    .card.is-hero:hover{ background: var(--teal-tint); }
+    .btn-primary:hover{ background:var(--teal-deep); transform: translateY(-1px); box-shadow: 0 2px 4px rgba(20,107,97,0.26), 0 8px 18px rgba(20,107,97,0.24); }
+    .btn-ghost:hover{ background:var(--teal-tint); border-color:var(--line-accent); color:var(--teal-deep); }
+    .summary-card:hover{ box-shadow:var(--shadow-md); transform:translateY(-2px); }
+    .staff-trigger-btn:hover{ border-color:var(--ink-faint); color:var(--ink-soft); background:var(--teal-tint); }
+  }
+</style>
+</head>
+<body>
+
+<div id="app">
+
+  <!-- TOPBAR with stage-based progress tracker -->
+  <header class="topbar" id="topbar" hidden>
+    <div class="topbar-inner">
+      <div class="brandmark" id="brandmark">
+        <span class="dot">🦷</span>
+        <span class="brand-text"><span class="brand-name">Flosswork</span><span class="brand-sub">Dental Clinic</span></span>
+      </div>
+      <div class="care-badge">💚 Let's Build Your Best Smile</div>
+    </div>
+    <div class="tracker-bar">
+      <nav class="tracker" id="tracker" aria-label="Progress through smile plan"></nav>
+    </div>
+  </header>
+
+  <main class="screens" id="screens">
+
+    <!-- SCREEN 0 — WELCOME -->
+    <section class="screen is-active" data-screen="welcome">
+      <div class="screen-inner welcome">
+        <div class="welcome-card">
+          <span class="welcome-eyebrow">✦ Flosswork Dental Clinic</span>
+          <h1>Build Your Smile Plan</h1>
+          <p>Design your ideal professional cleaning and whitening experience.</p>
+          <div class="welcome-meta">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><circle cx="12" cy="12" r="9"/><path d="M12 7v5l3 3"/></svg>
+            Takes less than 1 minute
+          </div>
+          <div class="patient-name-field">
+            <label for="patientNameInput" class="sr-only">Your name</label>
+            <input type="text" id="patientNameInput" placeholder="Enter your name" autocomplete="off">
+            <button type="button" class="patient-name-clear" id="patientNameClear" aria-label="Clear name" hidden>
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round"><path d="M6 6l12 12M18 6L6 18"/></svg>
+            </button>
+          </div>
+          <button class="btn btn-primary btn-lg" id="startBtn">
+            Let's Begin
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14M13 6l6 6-6 6"/></svg>
+          </button>
+        </div>
+      </div>
+    </section>
+
+    <!-- SCREEN 1 — SCALING (mandatory) -->
+    <section class="screen" data-screen="scaling">
+      <div class="screen-inner">
+        <div class="section-head">
+          <h2>Your healthy smile begins here <span class="patient-tag-inline" hidden></span></h2>
+        </div>
+        <div id="scalingMount"></div>
+      </div>
+    </section>
+
+    <!-- SCREEN 2 — POLISHING -->
+    <section class="screen" data-screen="polishing">
+      <div class="screen-inner">
+        <div class="section-head">
+          <h2>Choose your finish <span class="patient-tag-inline" hidden></span></h2>
+        </div>
+        <div class="grid" id="polishingMount"></div>
+      </div>
+    </section>
+
+    <!-- SCREEN 3 — WHITENING -->
+    <section class="screen" data-screen="whitening">
+      <div class="screen-inner">
+        <div class="section-head">
+          <h2>Brighten your smile <span class="patient-tag-inline" hidden></span></h2>
+        </div>
+        <div class="grid" id="whiteningMount"></div>
+      </div>
+    </section>
+
+    <!-- SCREEN 4 — FLUORIDE & DESENSITIZING -->
+    <section class="screen" data-screen="fluoride">
+      <div class="screen-inner">
+        <div class="section-head">
+          <h2>Protect your teeth <span class="patient-tag-inline" hidden></span></h2>
+        </div>
+        <div class="grid" id="fluorideMount"></div>
+      </div>
+    </section>
+
+    <!-- SCREEN 5 — ADD-ONS -->
+    <section class="screen" data-screen="addons">
+      <div class="screen-inner">
+        <div class="section-head">
+          <h2>Long-Term Care <span class="patient-tag-inline" hidden></span></h2>
+        </div>
+        <div class="grid" id="addonsMount"></div>
+      </div>
+    </section>
+
+    <!-- SCREEN 5 — SUMMARY -->
+    <section class="screen" data-screen="summary">
+      <div class="screen-inner">
+        <div class="summary-hero">
+          <div class="summary-burst" id="summaryBurst">
+            <svg viewBox="0 0 64 64" fill="none">
+              <circle cx="32" cy="32" r="30" stroke="#146B61" stroke-width="1.5" opacity="0.18"/>
+              <circle cx="32" cy="32" r="22" fill="#146B61"/>
+              <path d="M22 32l7 7 14-14" stroke="#fff" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" fill="none"/>
+            </svg>
+          </div>
+          <h2 id="summaryHeading">✨ Excellent Choice!</h2>
+          <p>Here's your personalised smile plan.</p>
+        </div>
+
+        <div class="summary-list" id="summaryList"></div>
+
+        <div class="summary-total-card" id="summaryTotalCard"></div>
+
+        <div class="summary-benefits">
+          <h3>Expected Benefits</h3>
+          <p class="benefits-subtitle">Included with your personalised plan</p>
+          <div class="benefit-grid" id="summaryBenefits"></div>
+        </div>
+
+        <div class="summary-closing">
+          <p>Here's to a healthier, brighter, more confident smile.</p>
+          <div class="signature">— The Flosswork Team</div>
+        </div>
+      </div>
+    </section>
+
+  </main>
+
+  <!-- FOOTER NAV -->
+  <footer class="footerbar" id="footerbar" hidden>
+    <div class="footerbar-inner">
+      <button class="btn btn-ghost" id="backBtn" aria-label="Back">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M19 12H5M11 18l-6-6 6-6"/></svg>
+      </button>
+      <div class="footer-meta" id="footerMeta"></div>
+      <div class="footer-buttons">
+        <button class="btn btn-ghost" id="skipBtn" hidden>Skip</button>
+        <button type="button" class="staff-trigger-btn" id="staffTriggerBtn" hidden>Staff View</button>
+        <button class="btn btn-ghost" id="resetBtn" hidden>
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 12a9 9 0 1 0 3-6.7M3 4v5h5"/></svg>
+          Start Over
+        </button>
+        <button class="btn btn-primary" id="nextBtn">
+          Continue
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14M13 6l6 6-6 6"/></svg>
+        </button>
+      </div>
+    </div>
+  </footer>
+
+  <!-- Staff-only panel: revealed via the "Staff View" button on the summary screen. -->
+  <div class="staff-panel" id="staffPanel" hidden aria-hidden="true">
+    <div class="staff-panel-head">
+      <span>Staff View</span>
+      <button type="button" class="staff-panel-close" id="staffPanelClose" aria-label="Close staff view">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round"><path d="M6 6l12 12M18 6L6 18"/></svg>
+      </button>
+    </div>
+    <div class="staff-panel-list" id="staffPanelList"></div>
+    <div class="staff-panel-discount">
+      <label for="staffDiscount">Discount</label>
+      <input type="text" id="staffDiscount" placeholder="e.g. 10% or ₹500" autocomplete="off">
+    </div>
+    <div class="staff-panel-total" id="staffPanelTotal"></div>
+  </div>
+
+</div>
+
+<script>
+(function(){
+  "use strict";
+
+  /* ==========================================================
+     ICONS — custom two-tone illustrations, consistent style:
+     soft filled shape + linear detail in teal/champagne.
+     Same ICON object API as before so all call sites are untouched.
+     ========================================================== */
+  const ICON = {
+    tooth: '<svg viewBox="0 0 40 40" fill="none"><path d="M20 6c-4 0-6 2.4-8.3 2.4S8 6.4 6 7.8C3.3 9.7 4 14.8 5.5 19c1.3 3.6 1.7 7.6 2.6 11 .5 2 1.6 4 3.2 4s2-2.4 2.5-5c.5-2.3 1.1-4.2 2.6-4.2s2.1 2 2.6 4.2c.5 2.6.9 5 2.5 5s2.7-2 3.2-4c.9-3.4 1.3-7.4 2.6-11C26.5 15.3 27 9.7 24.5 7.8 22.5 6.4 24.3 8.4 20 6z" fill="#E4EDE9" stroke="#0E4D45" stroke-width="1.6" stroke-linejoin="round"/><path d="M16 15c1 1.6 1 3.4 0 5" stroke="#C9A86A" stroke-width="1.4" stroke-linecap="round"/></svg>',
+    sparkle: '<svg viewBox="0 0 40 40" fill="none"><path d="M20 6l2.6 9.4L32 18l-9.4 2.6L20 30l-2.6-9.4L8 18l9.4-2.6L20 6z" fill="#F6EEDC" stroke="#A6824A" stroke-width="1.5" stroke-linejoin="round"/><path d="M30 26l1 3.2 3.2 1-3.2 1-1 3.2-1-3.2-3.2-1 3.2-1 1-3.2z" fill="#0E4D45"/></svg>',
+    sun: '<svg viewBox="0 0 40 40" fill="none"><circle cx="20" cy="20" r="8" fill="#F6EEDC" stroke="#A6824A" stroke-width="1.6"/><g stroke="#0E4D45" stroke-width="1.6" stroke-linecap="round"><path d="M20 5v4M20 31v4M5 20h4M31 20h4M9.1 9.1l2.8 2.8M28.1 28.1l2.8 2.8M30.9 9.1l-2.8 2.8M11.9 28.1l-2.8 2.8"/></g></svg>',
+    drop: '<svg viewBox="0 0 40 40" fill="none"><path d="M20 5s11 12.8 11 19.8C31 30.9 26 35 20 35S9 30.9 9 24.8C9 17.8 20 5 20 5z" fill="#E4EDE9" stroke="#0E4D45" stroke-width="1.6" stroke-linejoin="round"/><path d="M14.5 24c0 3 2.3 5.4 5.5 5.8" stroke="#C9A86A" stroke-width="1.4" stroke-linecap="round"/></svg>',
+    shield: '<svg viewBox="0 0 40 40" fill="none"><path d="M20 5l12 5v10c0 8-5.2 13.4-12 16-6.8-2.6-12-8-12-16V10l12-5z" fill="#E4EDE9" stroke="#0E4D45" stroke-width="1.6" stroke-linejoin="round"/><path d="M14.5 19.5l3.8 3.8 7.2-7.6" stroke="#A6824A" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></svg>',
+    kit: '<svg viewBox="0 0 40 40" fill="none"><rect x="6" y="15" width="28" height="17" rx="3" fill="#E4EDE9" stroke="#0E4D45" stroke-width="1.6"/><path d="M14 15v-3a6 6 0 0 1 12 0v3" stroke="#0E4D45" stroke-width="1.6"/><path d="M16 22.5h8M20 18.5v8" stroke="#A6824A" stroke-width="1.6" stroke-linecap="round"/></svg>',
+    flosser: '<svg viewBox="0 0 40 40" fill="none"><path d="M12 6v10a8 8 0 0 0 16 0V6" fill="none" stroke="#0E4D45" stroke-width="1.6" stroke-linecap="round"/><path d="M14 34l6-12 6 12" stroke="#0E4D45" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/><circle cx="20" cy="14" r="2.4" fill="#C9A86A"/></svg>',
+    guard: '<svg viewBox="0 0 40 40" fill="none"><path d="M8 10c5 3 19 3 24 0v10c0 9-5.8 14.4-12 16.5C13.8 34.4 8 29 8 20V10z" fill="#E4EDE9" stroke="#0E4D45" stroke-width="1.6" stroke-linejoin="round"/><path d="M14 19.5c2.5 1.4 9.5 1.4 12 0" stroke="#A6824A" stroke-width="1.5" stroke-linecap="round"/></svg>',
+    check: '<svg viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><path d="M20 6L9 17l-5-5"/></svg>',
+    cross: '<svg viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><path d="M6 6l12 12M18 6L6 18"/></svg>',
+    sealant: '<svg viewBox="0 0 40 40" fill="none"><path d="M20 6c-4 0-6 2.4-8.3 2.4S8 6.4 6 7.8C3.3 9.7 4 14.8 5.5 19c1.3 3.6 1.7 7.6 2.6 11 .5 2 1.6 4 3.2 4s2-2.4 2.5-5c.5-2.3 1.1-4.2 2.6-4.2s2.1 2 2.6 4.2c.5 2.6.9 5 2.5 5s2.7-2 3.2-4c.9-3.4 1.3-7.4 2.6-11C26.5 15.3 27 9.7 24.5 7.8 22.5 6.4 24.3 8.4 20 6z" fill="#F6EEDC" stroke="#A6824A" stroke-width="1.6" stroke-linejoin="round"/><circle cx="20" cy="15" r="2.6" fill="#0E4D45"/></svg>',
+    crown: '<svg viewBox="0 0 40 40" fill="none"><path d="M7 16l5 5 8-10 8 10 5-5-3 16H10L7 16z" fill="#F6EEDC" stroke="#A6824A" stroke-width="1.6" stroke-linejoin="round"/><circle cx="20" cy="9" r="2" fill="#0E4D45"/></svg>',
+    polish: '<svg viewBox="0 0 40 40" fill="none"><circle cx="20" cy="20" r="13" fill="#E4EDE9" stroke="#0E4D45" stroke-width="1.6"/><path d="M14 20a6 6 0 0 1 6-6" stroke="#A6824A" stroke-width="1.8" stroke-linecap="round"/><path d="M26 14l1.6-1.6M27 22l2 .6M13 27l-1.6 1.6" stroke="#C9A86A" stroke-width="1.4" stroke-linecap="round"/></svg>',
+    tray: '<svg viewBox="0 0 40 40" fill="none"><path d="M7 17c4-3 22-3 26 0-1 6-4 11-13 11S8 23 7 17z" fill="#E4EDE9" stroke="#0E4D45" stroke-width="1.6" stroke-linejoin="round"/><path d="M12 18.5c3 1.6 13 1.6 16 0" stroke="#A6824A" stroke-width="1.4" stroke-linecap="round"/></svg>'
+  };
+
+
+  /* ==========================================================
+     TREATMENT DATA — single source of truth.
+     Each item: id, name, price (number|null), priceLabel,
+     section, badges[], benefits[], bestFor[], icon
+     Structured so future treatments can be appended easily.
+     ========================================================== */
+
+  const DATA = {
+    scaling: {
+      id: 'scaling',
+      name: 'Professional Cleaning<br>★★★★★',
+      descriptor: 'Foundation',
+      price: 2000, strikePrice: 0,
+      benefits: [
+        'Removes plaque & tartar',
+        'Healthier gums',
+        'Fresher breath',
+        'Prepares teeth for polishing & whitening'
+      ],
+      bestFor: ['🌿 Fresh breath', '🩸 No bleeding gums', '👨🏻‍🦱 Everyone', '♻️ Routine maintenance'],
+      note: 'Included for every professional cleaning appointment',
+      icon: ICON.tooth
+    },
+
+    polishing: [
+      {
+        id: 'polish-basic', name: 'Basic Polishing<br>★', descriptor: 'Everyday Finish', price: 500, strikePrice: 1000, tier: 'good',
+        benefits: ['Cleaner feel', 'All day freshness'],
+        bestFor: ['♻️ Routine maintenance'],
+        badges: [{label:'Budget Friendly', cls:'b-clay', icon:'★'}],
+        icon: ICON.polish
+      },
+      {
+        id: 'polish-anticaries', name: 'Advanced Polishing<br>★★', descriptor: 'Extra Enamel Care', price: 1000, strikePrice: 1500, tier: 'better',
+        benefits: ['Smooth finish', 'Extra enamel care', 'Long term effect'],
+        bestFor: ['☕ Coffee', '🍵 Tea', '🔘 Mild stains'],
+        badges: [{label:'Best Value', cls:'b-teal', type:'accent', icon:'★'}, {label:'Best Value', cls:'b-clay', icon:'★'}],
+        icon: ICON.shield
+      },
+      {
+        id: 'polish-air', name: 'Air Polishing<br>★★★', descriptor: 'Premium Finish', price: 2500, strikePrice: 3000, tier: 'best',
+        benefits: ['Ultra smooth finish', 'Advanced stain removal', 'Gentle air cleaning'],
+        bestFor: ['☕ Coffee', '🍵 Tea', '🚬 Smoking', '⛓️ Braces', '⚫ Heavy staining'],
+        badges: [{label:'Best Result', cls:'b-gold', icon:'★'}, {label:'Premium Experience', cls:'b-gold', icon:'★'}],
+        icon: ICON.sun
+      }
+    ],
+
+    whitening: [
+      {
+        id: 'white-serum', name: 'Whitening Serum<br>★', descriptor: 'Quick Brightness Boost', price: 1000, strikePrice: 1500, tier: 'good',
+        benefits: ['Instant brightness boost', 'Quick treatment'],
+        bestFor: ['📸 Selfie ready'],
+        badges: [{label:'Quick Upgrade', cls:'b-teal', type:'accent', icon:'★'}, {label:'Fast Results', cls:'b-teal', icon:'★'}],
+        icon: ICON.drop
+      },
+      {
+        id: 'white-basic', name: 'Professional Whitening<br>★★', descriptor: 'Noticeably Whiter Smile', price: 4500, strikePrice: 5500, tier: 'good',
+        benefits: ['Whiter smile', 'Professional in-clinic treatment'],
+        bestFor: ['🩷 Date ready','🎉 Personal events'],
+        badges: [{label:'Popular Choice', cls:'b-teal', icon:'★'}],
+        icon: ICON.sun
+      },
+      {
+        id: 'white-light', name: 'Light-Activated Whitening<br>★★★', descriptor: 'Enhanced Brightness', price: 7500, strikePrice: 9000, tier: 'better',
+        benefits: ['Noticeably whiter smile', 'LED-assisted whitening'],
+        bestFor: ['👩🏻‍💼 Professionals', '🎁 Important occasions'],
+        badges: [{label:'Recommended', cls:'b-gold', icon:'★'}],
+        icon: ICON.sparkle
+      },
+      {
+        id: 'white-premium', name: 'Hollywood Whitening<br>★★★★', descriptor: 'Maximum Brightness', price: 12000, strikePrice: 14000, tier: 'best', isHero: true,
+        benefits: ['Maximum whitening', 'Multiple sittings*'],
+        bestFor: ['💍 Wedding', '✨ Smile makeover', '📸 Photoshoot', '⭐ Maximum whitening'],
+        badges: [{label:'Signature Treatment', cls:'b-gold', type: 'accent', icon:'★'}],
+        icon: ICON.crown
+      },
+      {
+        id: 'white-tray', name: 'Custom Whitening Trays<br>◾', descriptor: 'Long-Term Whitening', price: 3000, strikePrice: 3500, tier: 'better',
+        priceLabel: 'Tray ₹3,000 · Gel refill from ₹1,500',
+        isTray: true,
+        trayPrice: 3000, gelPrice: 2000,
+        benefits: ['Whiten at home', 'Custom reusable trays', 'Can also be used as a night guard'],
+        bestFor: ['⭐ Super confidence', '📆 Daily whitening'],
+        badges: [{label:'Re-Usable', cls:'b-teal', type: 'accent', icon:'★'}, {label:'Reusable', cls:'b-teal', icon:'★'}],
+        icon: ICON.tray
+      }
+    ],
+
+    fluoride: [
+      {
+        id: 'fluoride-basic', name: 'Basic Fluoride Protection<br>★', descriptor: 'Everyday Protection', price: 800, strikePrice: 1400, tier: 'good',
+        benefits: ['Strengthens enamel', 'Protection for cavities'],
+        bestFor: ['🦠 Cavity risk', '🦷 Weak teeth'],
+        badges: [{label:'Budget Friendly', cls:'b-teal', icon:'★'}],
+        icon: ICON.shield
+      },
+      {
+        id: 'fluoride-premium', name: 'Advanced  Fluoride Protection<br>★★', descriptor: 'Long-Lasting Protection', price: 1500, strikePrice: 2000, tier: 'better',
+        benefits: ['High-concentration formula', 'Extra protection for cavities', 'Longer-lasting protection'],
+        bestFor: ['🦠 High cavity risk', '🫧 Aligner cases'],
+        badges: [{label:'Recommended', cls:'b-teal', type:'accent', icon:'★'}, {label:'High Protection', cls:'b-clay', icon:'★'}],
+        icon: ICON.shield
+      },
+      {
+        id: 'fluoride-desensitizing', name: 'Sensitivity relief<br>◾', descriptor: 'Everyday Comfort', price: 900, strikePrice: 1400, tier: 'good',
+        benefits: ['Helps reduce tooth sensitivity', 'More comfortable with hot & cold foods', 'Ideal after whitening'],
+        bestFor: ['🥶 Hot & Cold Sensitivity', '✨ After Whitening'],
+        badges: [{label:'Sensitive Teeth', cls:'b-teal', icon:'★'}],
+        icon: ICON.drop
+      }
+    ],
+
+    addons: [
+      {
+        id: 'addon-flosser', name: 'Water Flosser<br>★★★', descriptor: 'Everyday Home Care', price: 2950, strikePrice: 0, priceTag: 'MRP', hidePriceNumber: true,
+        benefits: ['Professional cleaning at home', 'Great around crowns, bridges & implants', 'Keep gums healthier'],
+        bestFor: ['📆 Everyday Cleaning', '🌿 Gum care', '⛓️ Aligners & braces', '♎ Crowns & bridges'],
+        badges: [{label:'Must Have', cls:'b-gold', type:'accent', icon:'★'}, {label:'Home Upgrade', cls:'b-clay', icon:'★'}],
+        icon: ICON.flosser
+      },
+      {
+        id: 'addon-nightguard', name: 'Night Guard<br>★★', descriptor: 'Nightly Protection', price: 3000, strikePrice: 3500,
+        benefits: ['Protects against grinding and clenching','Reduces tooth wear', 'Can be used as whitening trays'],
+        bestFor: ['🦷 Teeth grinding', '💢 Jaw discomfort', '🛡️ Smile protection'],
+        badges: [{label:'Recommended', cls:'b-teal', icon:'★'}],
+        icon: ICON.guard
+      },
+      {
+        id: 'addon-sealant', name: 'Pit & Fissure Sealant<br>◾', descriptor: 'Cavity Protection', price: 700, strikePrice: 1200,
+        benefits: ['Helps protect deep grooves', 'Helps reduce cavity risk', 'Quick & painless'],
+        bestFor: ['🔬 Deep grooves', '🦠 High cavity risk'],
+        badges: [{label:'Prevent Caries', cls:'b-teal', icon:'★'}],
+        icon: ICON.sealant
+      },
+
+    ]
+  };
+
+  /* ==========================================================
+     STATE
+     ========================================================== */
+  const ORDER = ['welcome','scaling','polishing','whitening','fluoride','addons','summary'];
+
+  /* Continue button label per screen — edit per section here */
+  const NEXT_BTN_LABELS = {
+    scaling: 'Continue',
+    polishing: 'Continue',
+    fluoride: 'Continue',
+    whitening: 'Continue',
+    addons: 'Done'
+  };
+
+  /* Skip button label per screen — edit per section here */
+  const SKIP_BTN_LABELS = {
+    polishing: 'Skip Smooth Teeth',
+    fluoride: 'Skip Protection',
+    whitening: 'Skip Whiter Teeth',
+    addons: 'Skip Home Care'
+  };
+
+  /* Back button label per screen — edit per section here */
+  const BACK_BTN_LABELS = {
+    scaling: 'Back',
+    polishing: 'Back',
+    fluoride: 'Back',
+    whitening: 'Back',
+    addons: 'Back',
+    summary: 'Back'
+  };
+
+  /* Start Over button label — shown only on summary */
+  const RESET_BTN_LABEL = 'Start Over';
+
+  const state = {
+    screenIndex: 0,
+    patientName: '',
+    selections: {
+      scaling: true, // always true, mandatory
+      polishing: new Set([DATA.polishing[0].id]),
+      fluoride: new Set([DATA.fluoride[0].id]),
+      whitening: new Set([DATA.whitening[0].id]),
+      addons: new Set([DATA.addons[0].id])
+    }
+  };
+
+  function fmt(n){
+    return '₹' + n.toLocaleString('en-IN');
+  }
+
+  /* ==========================================================
+     RENDER: CARD BUILDER
+     ========================================================== */
+  function badgesHTML(badges){
+    if(!badges || !badges.length) return '';
+    return '<div class="card-badges">' + badges.map(b =>
+      `<span class="badge ${b.cls}">${b.label}</span>`
+    ).join('') + '</div>';
+  }
+
+  function chipsHTML(items){
+    if(!items || !items.length) return '';
+    return '<div class="card-chips">' + items.map(c => `<span class="chip">${c}</span>`).join('') + '</div>';
+  }
+
+  function benefitsHTML(items){
+    return '<ul class="card-benefits">' + items.map(b => `<li>${b}</li>`).join('') + '</ul>';
+  }
+
+  function buildOptionCard(item, section, selectedSet, index){
+    const isSelected = selectedSet.has(item.id);
+    const primaryBadge = (item.badges && item.badges[0]) ? item.badges[0] : null;
+    const card = document.createElement('button');
+    card.type = 'button';
+    card.className = 'card' + (isSelected ? ' is-selected' : '') + (item.isTray ? ' tray-card' : '') + (item.isHero ? ' is-hero' : '');
+    card.setAttribute('aria-pressed', String(isSelected));
+    card.dataset.id = item.id;
+    card.dataset.section = section;
+    if(item.tier) card.dataset.tier = item.tier;
+    card.style.setProperty('--stagger', index);
+
+    const strikeHTML = amount => amount ? `<span class="price-strike">${fmt(amount)}</span>` : '';
+
+    let priceBlock;
+    if(item.isTray){
+      priceBlock = `<div class="tray-prices">
+        <div><span class="tp-label">Tray (one-time)</span><span class="tp-val">${strikeHTML(item.strikePrice)}${fmt(item.trayPrice)}</span></div>
+        <div><span class="tp-label">Gel refill</span><span class="tp-val">From ${fmt(item.gelPrice)}</span></div>
+      </div>`;
+    } else if(item.price === null){
+      priceBlock = `<div class="card-price card-price-note">Ask your dentist</div>`;
+    } else if(item.hidePriceNumber){
+      priceBlock = `<div class="card-price">${item.priceTag}</div>`;
+    } else {
+      const tagHTML = item.priceTag ? `<span class="price-tag">${item.priceTag}</span>` : '';
+      priceBlock = `<div class="card-price">${tagHTML}${strikeHTML(item.strikePrice)}<span class="currency">₹</span>${item.price.toLocaleString('en-IN')}</div>`;
+    }
+
+    const badgeTypeClass = t => t === 'accent' ? 'badge-solid-accent' : 'badge-solid-gold';
+    const displayBadge = primaryBadge || (item.isHero ? { label:'Recommended', cls:'b-teal', type:'accent', icon:'★' } : null);
+    const isDisplaySolid = displayBadge && (displayBadge.type === 'accent' || displayBadge.type === 'gold');
+    const singleBadge = displayBadge
+      ? `<div class="card-badges"><span class="badge ${displayBadge.cls}${isDisplaySolid ? ' ' + badgeTypeClass(displayBadge.type) : ''}">${displayBadge.label}</span></div>`
+      : '';
+
+    card.innerHTML = `
+      <span class="card-check" aria-hidden="true">${ICON.check}</span>
+      <div class="card-header">
+        <h3 class="card-name">${item.name}</h3>
+      </div>
+      ${singleBadge}
+      ${benefitsHTML(item.benefits)}
+      ${chipsHTML(item.bestFor)}
+      <div class="card-price-footer">${priceBlock}</div>
+    `;
+
+    card.addEventListener('click', () => {
+      if(selectedSet.has(item.id)){ selectedSet.delete(item.id); }
+      else { selectedSet.add(item.id); }
+      const nowSelected = card.classList.toggle('is-selected');
+      card.setAttribute('aria-pressed', nowSelected);
+
+      triggerRipple(card);
+      updateFooterMeta();
+    });
+
+    return card;
+  }
+
+  /* Subtle tap ripple — premium microinteraction, no external deps */
+  function triggerRipple(card){
+    const r = document.createElement('span');
+    r.className = 'card-ripple';
+    card.appendChild(r);
+    r.addEventListener('animationend', () => r.remove());
+  }
+
+  function refreshSection(section){
+    const mount = document.getElementById(section + 'Mount');
+    if(!mount) return;
+    mount.innerHTML = '';
+    const selectedSet = state.selections[section];
+
+    DATA[section].forEach((item, i) => {
+      mount.appendChild(buildOptionCard(item, section, selectedSet, i));
+    });
+  }
+
+  function renderScaling(){
+    const mount = document.getElementById('scalingMount');
+    const item = DATA.scaling;
+    mount.innerHTML = `
+      <div class="feature-card is-mandatory" style="border-color:var(--teal);">
+        <div class="card-header" style="border-bottom:none;padding-bottom:0;">
+          <h3 class="card-name">${item.name}</h3>
+        </div>
+        <div class="card-badges">
+          <span class="badge b-teal badge-solid-accent">Included</span>
+        </div>
+        ${benefitsHTML(item.benefits)}
+        ${chipsHTML(item.bestFor)}
+        <div class="card-price-footer"><div class="card-price">${item.strikePrice ? `<span class="price-strike">${fmt(item.strikePrice)}</span>` : ''}<span class="currency">₹</span>${item.price.toLocaleString('en-IN')}</div></div>
+      </div>
+    `;
+  }
+
+  /* ==========================================================
+     PROGRESS TRACKER — segmented stage bar
+     ========================================================== */
+  const TRACK_SCREENS = ['scaling','polishing','whitening','fluoride','addons','summary'];
+  const STAGE_NAMES = { scaling:'Cleaning', polishing:'Polishing', fluoride:'Fluoride', whitening:'Whitening', addons:'Protection', summary:'Smile Plan' };
+  function renderTracker(){
+    const el = document.getElementById('tracker');
+    const currentScreen = ORDER[state.screenIndex];
+    const currentTrackIdx = TRACK_SCREENS.indexOf(currentScreen);
+    const progress = TRACK_SCREENS.length > 1 ? currentTrackIdx / (TRACK_SCREENS.length - 1) : 0;
+
+    el.innerHTML = `
+      <div class="tracker-rail"><div class="tracker-rail-fill" style="--p:${progress}"></div></div>
+      <div class="tracker-stages">
+        ${TRACK_SCREENS.map((scr, i) => {
+          const selection = state.selections[scr];
+          const isSkipped = i < currentTrackIdx && selection instanceof Set && selection.size === 0;
+          const cls = i < currentTrackIdx ? (isSkipped ? 'is-skipped' : 'is-done') : (i === currentTrackIdx ? 'is-current' : '');
+          const markIcon = isSkipped ? ICON.cross : (cls === 'is-done' ? ICON.check : '');
+          return `<span class="tracker-stage ${cls}"><span class="stage-head"><span class="stage-mark">${markIcon}</span></span><span class="stage-text">${STAGE_NAMES[scr]}</span></span>`;
+        }).join('')}
+      </div>
+    `;
+  }
+
+  /* ==========================================================
+     FOOTER META (selection count / price hint — NOT a total)
+     ========================================================== */
+  function updateFooterMeta(){
+    document.getElementById('footerMeta').textContent = '';
+  }
+
+  /* ==========================================================
+     SUMMARY BUILDER
+     ========================================================== */
+  function lookup(section, id){
+    if(section === 'scaling') return DATA.scaling;
+    return DATA[section].find(d => d.id === id);
+  }
+
+  const CATEGORY_META = {
+    scaling:   { title: 'Professional Cleaning', icon: ICON.tooth },
+    polishing: { title: 'Your Finish',            icon: ICON.polish },
+    whitening: { title: 'Whitening',              icon: ICON.sun },
+    fluoride:  { title: 'Protect Your Teeth',      icon: ICON.shield },
+    addons:    { title: 'Long-Term Care',          icon: ICON.kit }
+  };
+
+  function buildSummary(){
+    const heading = document.getElementById('summaryHeading');
+    heading.textContent = state.patientName ? `✨ Excellent Choice, ${state.patientName}!` : '✨ Excellent Choice!';
+
+    const list = document.getElementById('summaryList');
+    list.innerHTML = '';
+    let delay = 0;
+
+    const SECTIONS = [
+      {
+        key: 'scaling',
+        items: [{ item: DATA.scaling, priceText: fmt(DATA.scaling.price), badgeLabel: 'Included' }]
+      },
+      {
+        key: 'polishing',
+        items: Array.from(state.selections.polishing).map(id => {
+          const it = lookup('polishing', id);
+          return { item: it, priceText: fmt(it.price), badgeLabel: it.badges && it.badges[0] && it.badges[0].label };
+        })
+      },
+      {
+        key: 'whitening',
+        items: Array.from(state.selections.whitening).map(id => {
+          const it = lookup('whitening', id);
+          return { item: it, priceText: it.isTray ? `${fmt(it.trayPrice)} + refill` : fmt(it.price), badgeLabel: it.badges && it.badges[0] && it.badges[0].label };
+        })
+      },
+      {
+        key: 'fluoride',
+        items: Array.from(state.selections.fluoride).map(id => {
+          const it = lookup('fluoride', id);
+          return { item: it, priceText: fmt(it.price), badgeLabel: it.badges && it.badges[0] && it.badges[0].label };
+        })
+      },
+      {
+        key: 'addons',
+        items: Array.from(state.selections.addons).map(id => {
+          const it = lookup('addons', id);
+          return { item: it, priceText: it.price === null ? 'With dentist' : (it.hidePriceNumber ? it.priceTag : fmt(it.price)), badgeLabel: it.badges && it.badges[0] && it.badges[0].label };
+        })
+      }
+    ];
+
+    list.hidden = true;
+
+    // Plain name + price list
+    const totalCard = document.getElementById('summaryTotalCard');
+    const allItems = SECTIONS.flatMap(({ items }) => items);
+    let totalSavings = 0;
+    const rowsOut = allItems.map(({ item, priceText }) => {
+      const basePrice = item.isTray ? item.trayPrice : item.price;
+      const hasStrike = item.strikePrice && basePrice !== null;
+      if(hasStrike) totalSavings += (item.strikePrice - basePrice);
+      const strikeHTML = hasStrike ? `<span class="price-strike">${fmt(item.strikePrice)}</span>` : '';
+      return `
+      <div class="summary-total-row">
+        <span class="summary-total-name">${item.name}</span>
+        <span class="summary-total-price">${strikeHTML}${priceText}</span>
+      </div>
+    `;
+    }).join('');
+
+    const savingsHTML = totalSavings > 0
+      ? `<div class="summary-total-row summary-total-savings">
+          <span class="summary-total-name">You save</span>
+          <span class="summary-total-price">${fmt(totalSavings)}</span>
+        </div>`
+      : '';
+
+    totalCard.innerHTML = rowsOut + savingsHTML;
+
+    // Benefits grid
+    const benefitsList = [
+      'Cleaner teeth',
+      'Brighter smile',
+      'Fresher breath',
+      'Smoother teeth',
+      'Reduced staining',
+      'More confident smile'
+    ];
+    const bGrid = document.getElementById('summaryBenefits');
+    bGrid.innerHTML = benefitsList.map(label => `<div>${label}</div>`).join('');
+  }
+
+  /* ==========================================================
+     NAVIGATION
+     ========================================================== */
+  const topbar = document.getElementById('topbar');
+  const footerbar = document.getElementById('footerbar');
+  const screensEls = Array.from(document.querySelectorAll('.screen'));
+  const backBtn = document.getElementById('backBtn');
+  const nextBtn = document.getElementById('nextBtn');
+
+  function showScreen(index, direction){
+    const prevIndex = state.screenIndex;
+    state.screenIndex = index;
+    const screenName = ORDER[index];
+
+    screensEls.forEach(s => {
+      s.classList.remove('is-active','is-leaving-back');
+    });
+    const target = screensEls.find(s => s.dataset.screen === screenName);
+    target.classList.add('is-active');
+
+    // chrome visibility
+    if(screenName === 'welcome'){
+      topbar.hidden = true; footerbar.hidden = true;
+    } else {
+      topbar.hidden = false;
+      footerbar.hidden = false;
+      renderTracker();
+    }
+
+    // lazy-render section content right before showing
+    if(screenName === 'scaling') renderScaling();
+    if(screenName === 'polishing') refreshSection('polishing');
+    if(screenName === 'fluoride') refreshSection('fluoride');
+    if(screenName === 'whitening') refreshSection('whitening');
+    if(screenName === 'addons') refreshSection('addons');
+    if(screenName === 'summary') buildSummary();
+
+    const resetBtn = document.getElementById('resetBtn');
+    const skipBtn = document.getElementById('skipBtn');
+    const staffTriggerBtn = document.getElementById('staffTriggerBtn');
+    const SKIPPABLE = ['polishing','fluoride','whitening','addons'];
+
+    backBtn.textContent = '';
+    backBtn.innerHTML = `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M19 12H5M11 18l-6-6 6-6"/></svg>`;
+    backBtn.setAttribute('aria-label', BACK_BTN_LABELS[screenName] || 'Back');
+
+    if(screenName === 'summary'){
+      nextBtn.hidden = true;
+      resetBtn.hidden = false;
+      resetBtn.innerHTML = `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 12a9 9 0 1 0 3-6.7M3 4v5h5"/></svg> ${RESET_BTN_LABEL}`;
+      skipBtn.hidden = true;
+      staffTriggerBtn.hidden = false;
+      backBtn.disabled = false;
+      backBtn.style.visibility = 'visible';
+    } else if(screenName !== 'welcome'){
+      nextBtn.hidden = false;
+      resetBtn.hidden = true;
+      staffTriggerBtn.hidden = true;
+      skipBtn.hidden = !SKIPPABLE.includes(screenName);
+      skipBtn.textContent = SKIP_BTN_LABELS[screenName] || 'Skip';
+      const nextLabel = NEXT_BTN_LABELS[screenName] || 'Continue';
+      nextBtn.innerHTML = `${nextLabel} <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14M13 6l6 6-6 6"/></svg>`;
+      backBtn.disabled = false;
+      backBtn.style.visibility = 'visible';
+    }
+
+    updateFooterMeta();
+    window.scrollTo({top:0, behavior:'instant' in window ? 'instant' : 'auto'});
+  }
+
+  (function patientNameFieldInit(){
+    const nameInput = document.getElementById('patientNameInput');
+    const clearBtn = document.getElementById('patientNameClear');
+    function syncClearBtn(){ clearBtn.hidden = !nameInput.value; }
+    nameInput.addEventListener('input', syncClearBtn);
+    clearBtn.addEventListener('click', () => {
+      nameInput.value = '';
+      syncClearBtn();
+      nameInput.focus();
+      state.patientName = '';
+      document.querySelectorAll('.patient-tag-inline').forEach(tag => { tag.hidden = true; });
+    });
+  })();
+
+  document.getElementById('startBtn').addEventListener('click', () => {
+    const nameInput = document.getElementById('patientNameInput');
+    state.patientName = nameInput.value.trim();
+    document.querySelectorAll('.patient-tag-inline').forEach(tag => {
+      if(state.patientName){
+        tag.textContent = state.patientName;
+        tag.hidden = false;
+      } else {
+        tag.hidden = true;
+      }
+    });
+    showScreen(1, 'fwd');
+  });
+
+  nextBtn.addEventListener('click', () => {
+    if(state.screenIndex < ORDER.length - 1){
+      showScreen(state.screenIndex + 1, 'fwd');
+    }
+  });
+
+  backBtn.addEventListener('click', () => {
+    if(state.screenIndex > 0){
+      showScreen(state.screenIndex - 1, 'back');
+    }
+  });
+
+  document.getElementById('resetBtn').addEventListener('click', () => {
+    state.selections.polishing = new Set([DATA.polishing[0].id]);
+    state.selections.fluoride = new Set([DATA.fluoride[0].id]);
+    state.selections.whitening = new Set([DATA.whitening[0].id]);
+    state.selections.addons = new Set([DATA.addons[0].id]);
+    document.getElementById('patientNameInput').value = state.patientName;
+    showScreen(0);
+  });
+
+  document.getElementById('skipBtn').addEventListener('click', () => {
+    const screenName = ORDER[state.screenIndex];
+    if(state.selections[screenName]) state.selections[screenName].clear();
+    if(state.screenIndex < ORDER.length - 1) showScreen(state.screenIndex + 1, 'fwd');
+  });
+
+  /* ==========================================================
+     STAFF TOTAL PANEL
+     Revealed via the "Staff View" button at the bottom of the
+     summary screen. Auto-dismisses after 8s or on outside tap.
+     ========================================================== */
+  (function staffPanelInit(){
+    const panel = document.getElementById('staffPanel');
+    const listEl = document.getElementById('staffPanelList');
+    const totalEl = document.getElementById('staffPanelTotal');
+    const discountInput = document.getElementById('staffDiscount');
+    const triggerBtn = document.getElementById('staffTriggerBtn');
+    let hideTimer = null;
+
+    function parseDiscount(raw, subtotal){
+      if(!raw) return 0;
+      const trimmed = raw.trim();
+      const pctMatch = trimmed.match(/^(\d+(\.\d+)?)\s*%$/);
+      if(pctMatch) return subtotal * (parseFloat(pctMatch[1]) / 100);
+      const numMatch = trimmed.match(/^₹?\s*(\d+(\.\d+)?)$/);
+      if(numMatch) return parseFloat(numMatch[1]);
+      return 0;
+    }
+
+    function buildStaffContent(){
+      listEl.innerHTML = '';
+      let subtotal = 0;
+      let savings = 0;
+
+      function addLine(name, amount, strikePrice, hidePriceNumber, priceTag){
+        subtotal += amount;
+        if(strikePrice) savings += (strikePrice - amount);
+        const row = document.createElement('div');
+        row.className = 'staff-row';
+        if(hidePriceNumber){
+          row.innerHTML = `<span>${name}</span><span>${priceTag}</span>`;
+        } else {
+          const strikeHTML = strikePrice ? `<span class="staff-strike">${fmt(strikePrice)}</span>` : '';
+          row.innerHTML = `<span>${name}</span><span>${strikeHTML}${fmt(amount)}</span>`;
+        }
+        listEl.appendChild(row);
+      }
+
+      addLine(DATA.scaling.name, DATA.scaling.price, DATA.scaling.strikePrice);
+      state.selections.polishing.forEach(id => {
+        const it = lookup('polishing', id);
+        addLine(it.name, it.price, it.strikePrice, it.hidePriceNumber, it.priceTag);
+      });
+      state.selections.whitening.forEach(id => {
+        const it = lookup('whitening', id);
+        if(it.isTray){ addLine(it.name + ' (tray)', it.trayPrice, it.strikePrice, it.hidePriceNumber, it.priceTag); }
+        else { addLine(it.name, it.price, it.strikePrice, it.hidePriceNumber, it.priceTag); }
+      });
+      state.selections.fluoride.forEach(id => {
+        const it = lookup('fluoride', id);
+        addLine(it.name, it.price, it.strikePrice, it.hidePriceNumber, it.priceTag);
+      });
+      state.selections.addons.forEach(id => {
+        const it = lookup('addons', id);
+        if(it.price === null){
+          const row = document.createElement('div');
+          row.className = 'staff-row';
+          row.innerHTML = `<span>${it.name}</span><span>TBD</span>`;
+          listEl.appendChild(row);
+        } else {
+          addLine(it.name, it.price, it.strikePrice, it.hidePriceNumber, it.priceTag);
+        }
+      });
+
+      if(savings > 0){
+        const row = document.createElement('div');
+        row.className = 'staff-row staff-savings';
+        row.innerHTML = `<span>You save</span><span>${fmt(savings)}</span>`;
+        listEl.appendChild(row);
+      }
+
+      currentSavings = savings;
+      renderTotal(subtotal);
+      return subtotal;
+    }
+
+    function renderTotal(subtotal){
+      const discount = parseDiscount(discountInput.value, subtotal);
+      const net = Math.max(0, subtotal - discount);
+      const strikeHTML = currentSavings > 0 ? `<span class="staff-strike staff-strike-total">${fmt(subtotal + currentSavings)}</span>` : '';
+      totalEl.innerHTML = `<span class="label">Total</span><span>${strikeHTML}${fmt(Math.round(net))}</span>`;
+    }
+
+    let currentSubtotal = 0;
+    let currentSavings = 0;
+    discountInput.addEventListener('input', () => renderTotal(currentSubtotal));
+
+    function showPanel(){
+      currentSubtotal = buildStaffContent();
+      panel.hidden = false;
+      panel.setAttribute('aria-hidden', 'false');
+      requestAnimationFrame(() => panel.classList.add('is-visible'));
+    }
+
+    function hidePanel(){
+      panel.classList.remove('is-visible');
+      setTimeout(() => {
+        if(!panel.classList.contains('is-visible')){
+          panel.hidden = true;
+          panel.setAttribute('aria-hidden', 'true');
+        }
+      }, 240);
+    }
+
+    triggerBtn.addEventListener('click', () => {
+      if(panel.classList.contains('is-visible')){ hidePanel(); }
+      else { showPanel(); }
+    });
+
+    const closeBtn = document.getElementById('staffPanelClose');
+    closeBtn.addEventListener('click', hidePanel);
+  })();
+
+  // init
+  showScreen(0);
+
+})();
+</script>
+</body>
+</html>
