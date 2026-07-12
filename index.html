@@ -137,13 +137,15 @@
     transition: opacity 420ms var(--ease-spring), transform 420ms var(--ease-spring);
   }
   .smile-score-num{
-    position:absolute; inset:0; display:flex; align-items:center; justify-content:center;
-    font-size:14px; font-weight:800; color:var(--teal); font-variant-numeric:tabular-nums;
-    transition: color 300ms var(--ease);
+    font-family:inherit; font-size:12px; font-weight:800; fill:var(--teal);
+    font-variant-numeric:tabular-nums;
+    transition: fill 300ms var(--ease);
   }
   .smile-score.is-complete{ background:var(--teal-tint-deep); box-shadow:0 2px 10px rgba(20,107,97,0.18); }
   .smile-score.is-complete .smile-score-ring .ring-complete{ opacity:1; transform:scale(1); }
-  .smile-score.is-complete .smile-score-num{ color:#fff; }
+  .smile-score.is-complete .smile-score-ring .ring-track,
+  .smile-score.is-complete .smile-score-ring .ring-fill{ opacity:0; }
+  .smile-score.is-complete .smile-score-num{ fill:#fff; }
   .smile-score.is-complete .smile-score-ring-wrap{ animation: scorePop 420ms var(--ease-out); }
   .smile-score.is-complete .smile-score-ring-wrap::after{
     content:''; position:absolute; inset:-8px; border-radius:50%; z-index:-1;
@@ -163,7 +165,7 @@
     .smile-score-sub{ display:none; }
     .smile-score-ring-wrap{ width:38px; height:38px; }
     .smile-score-ring{ width:38px; height:38px; }
-    .smile-score-num{ font-size:12px; }
+    .smile-score-num{ font-size:11px; }
   }
   .brandmark{
     font-family: var(--font-body);
@@ -846,10 +848,10 @@ display: inline-block; margin-left: 4px; font-style: italic; font-weight: inheri
         <div class="smile-score-ring-wrap">
           <svg class="smile-score-ring" viewBox="0 0 40 40">
             <circle class="ring-track" cx="20" cy="20" r="16"></circle>
-            <circle class="ring-complete" cx="20" cy="20" r="14"></circle>
+            <circle class="ring-complete" cx="20" cy="20" r="18"></circle>
             <circle class="ring-fill" id="smileScoreCircle" cx="20" cy="20" r="16"></circle>
+            <text class="smile-score-num" id="smileScoreNum" x="20" y="20" text-anchor="middle" dominant-baseline="central" transform="rotate(90 20 20)">0</text>
           </svg>
-          <span class="smile-score-num" id="smileScoreNum">0</span>
         </div>
       </div>
     </div>
