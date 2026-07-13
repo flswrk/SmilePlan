@@ -813,6 +813,45 @@ display: inline-block; margin-left: 4px; font-style: italic; font-weight: inheri
   #staffPanel .staff-strike-total{ font-size:11px; color:#787774; opacity:0.6; font-weight:500; }
 
   /* ============================================================
+     CONFIRMATION MODAL — calm, minimal, single accent action
+     ============================================================ */
+  .modal-overlay{
+    position:fixed; inset:0; z-index:200;
+    background:rgba(20,20,20,0.36);
+    backdrop-filter: blur(3px); -webkit-backdrop-filter: blur(3px);
+    display:flex; align-items:center; justify-content:center;
+    padding:20px;
+    opacity:0; pointer-events:none;
+    transition: opacity 220ms var(--ease-out);
+  }
+  .modal-overlay.is-visible{ opacity:1; pointer-events:auto; }
+  .modal-card{
+    background:var(--surface);
+    border-radius:var(--radius-card);
+    box-shadow: var(--shadow-lg);
+    padding:28px 26px 24px;
+    max-width:340px; width:100%;
+    text-align:center;
+    transform: translateY(8px) scale(0.98);
+    transition: transform 220ms var(--ease-out);
+  }
+  .modal-overlay.is-visible .modal-card{ transform:none; }
+  .modal-icon{
+    width:48px; height:48px; margin:0 auto 16px;
+    border-radius:50%; background:var(--teal-tint);
+    display:flex; align-items:center; justify-content:center;
+    color:var(--teal); flex:none;
+  }
+  .modal-icon svg{ width:22px; height:22px; }
+  .modal-title{ font-size:18px; font-weight:700; color:var(--ink); margin:0 0 8px; letter-spacing:-0.01em; }
+  .modal-desc{ font-size:13.5px; color:var(--ink-soft); line-height:1.5; margin:0 0 22px; }
+  .modal-actions{ display:flex; gap:10px; }
+  .modal-actions .btn{ flex:1; min-height:46px; }
+  @media (prefers-reduced-motion: reduce){
+    .modal-overlay, .modal-card{ transition:none; }
+  }
+
+  /* ============================================================
      HOVER — only for devices with a real pointer (mouse/trackpad).
      Prevents "stuck hover" after tapping on touch screens; touch
      feedback is handled entirely via :active above.
@@ -1011,6 +1050,20 @@ display: inline-block; margin-left: 4px; font-style: italic; font-weight: inheri
       <input type="text" id="staffDiscount" placeholder="e.g. 10% or ₹500" autocomplete="off">
     </div>
     <div class="staff-panel-total" id="staffPanelTotal"></div>
+  </div>
+
+  <div class="modal-overlay" id="resetConfirmOverlay" hidden>
+    <div class="modal-card" role="alertdialog" aria-modal="true" aria-labelledby="resetConfirmTitle" aria-describedby="resetConfirmDesc">
+      <div class="modal-icon">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 12a9 9 0 1 0 3-6.7M3 4v5h5"/></svg>
+      </div>
+      <h3 class="modal-title" id="resetConfirmTitle">Start over?</h3>
+      <p class="modal-desc" id="resetConfirmDesc">This will clear your current selections and take you back to the beginning.</p>
+      <div class="modal-actions">
+        <button type="button" class="btn btn-ghost" id="resetConfirmCancel">Cancel</button>
+        <button type="button" class="btn btn-primary" id="resetConfirmOk">Start Over</button>
+      </div>
+    </div>
   </div>
 
 </div>
@@ -1617,13 +1670,36 @@ display: inline-block; margin-left: 4px; font-style: italic; font-weight: inheri
     }
   });
 
-  document.getElementById('resetBtn').addEventListener('click', () => {
+  function performReset(){
     state.selections.polishing = new Set([DATA.polishing[0].id]);
     state.selections.fluoride = new Set([DATA.fluoride[0].id]);
     state.selections.whitening = new Set([DATA.whitening[0].id]);
     state.selections.addons = new Set([DATA.addons[0].id]);
     document.getElementById('patientNameInput').value = state.patientName;
     showScreen(0);
+  }
+
+  const resetConfirmOverlay = document.getElementById('resetConfirmOverlay');
+  const resetConfirmOk = document.getElementById('resetConfirmOk');
+  const resetConfirmCancel = document.getElementById('resetConfirmCancel');
+
+  function openResetConfirm(){
+    resetConfirmOverlay.hidden = false;
+    requestAnimationFrame(() => resetConfirmOverlay.classList.add('is-visible'));
+  }
+  function closeResetConfirm(){
+    resetConfirmOverlay.classList.remove('is-visible');
+    setTimeout(() => {
+      if(!resetConfirmOverlay.classList.contains('is-visible')) resetConfirmOverlay.hidden = true;
+    }, 220);
+  }
+
+  document.getElementById('resetBtn').addEventListener('click', openResetConfirm);
+  resetConfirmCancel.addEventListener('click', closeResetConfirm);
+  resetConfirmOk.addEventListener('click', () => { closeResetConfirm(); performReset(); });
+  resetConfirmOverlay.addEventListener('click', (e) => { if(e.target === resetConfirmOverlay) closeResetConfirm(); });
+  document.addEventListener('keydown', (e) => {
+    if(e.key === 'Escape' && resetConfirmOverlay.classList.contains('is-visible')) closeResetConfirm();
   });
 
   document.getElementById('skipBtn').addEventListener('click', () => {
